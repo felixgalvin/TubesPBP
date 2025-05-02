@@ -13,7 +13,7 @@ export default{
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: "user", // pastikan nama tabel user sesuai
+          model: "user", 
           key: "user_id",
         },
         onDelete: "CASCADE",
@@ -27,7 +27,7 @@ export default{
         allowNull: false,
       },
       like: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       topik: {

@@ -41,7 +41,7 @@ export default{
         allowNull: false,
       },
       likeReply: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
     });
