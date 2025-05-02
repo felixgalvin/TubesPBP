@@ -1,4 +1,7 @@
 import {Table, Column, Model, DataType, PrimaryKey } from "sequelize-typescript";
+import { Request, Response } from "express";
+import { v4 } from "uuid";
+import { Sequelize } from "sequelize-typescript";
 
 export type StatusGender = "male" | "Female";
 
@@ -49,5 +52,21 @@ export class User extends Model {
         defaultValue: DataType.NOW
     })
     declare createdAt: Date;
-
 }
+
+export const findUserById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+  
+      const user = await User.findByPk(id);
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.status(200).json(user);
+    } catch (error) {
+      console.error("Find user error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
