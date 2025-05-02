@@ -30,10 +30,10 @@ export class Post extends Model {
     declare post: string;
     
     @Column({
-        type: DataType.BOOLEAN,
+        type: DataType.INTEGER,
         allowNull: false,
       })
-      declare like: boolean;
+      declare like: number;
       
 
       @Column({

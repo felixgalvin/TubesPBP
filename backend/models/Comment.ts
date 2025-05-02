@@ -32,9 +32,9 @@ export class Comment extends Model {
     declare comment: string;
     
     @Column({
-        type: DataType.BOOLEAN,
+        type: DataType.INTEGER,
         allowNull: false,
       })
-      declare likeComment: boolean;
+      declare likeComment: number;
 
 }

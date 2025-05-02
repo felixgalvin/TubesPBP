@@ -1,19 +1,89 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import reactLogo from '../assets/joko.svg'
 import '../style/HomePage.css'
+import { FaUserCircle } from "react-icons/fa";
 
-function HomePage() {
+type Post = {
+  title:string,
+  content:string,
+  like:number,
+}
+export const Postdesk = ({ title, content, like }: Post) => {
+  return (
+    <div className="post">
+      <h2>{title}</h2>
+      <p>{content}</p>
+      <div className="actions">
+        ❤️ {like} &nbsp; 💬
+      </div>
+    </div>
+  );
+};
+
+export const HomePage = () => {
+  const post:Post[] = [
+    {
+      title:"NBA 2025",
+      content:"Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"BUCINLUCOK",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"YESIRRR",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"CRYPTO BOSS COMINGGG",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"PAJERO",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"NBS`A 2025",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"SIJDHUhhdhhdhd 5",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"NBS`A 2025",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"ITHB CORE",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+    {
+      title:"Nuijsd",
+      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
+      like:12
+    },
+  ]
+
   return (
     <>  
-  <section className='nav-container'>
+  <div className='nav-container'>
   <div className="navbar">
     <div className="username">
       <span>Username</span>
-      <img src={viteLogo} alt="User Icon" className="user-icon" />
+      <FaUserCircle className='user-icon'/>
     </div>
   </div>
-  </section>
+  </div>
 
   <div className="container">
     <aside className="sidebar">
@@ -28,88 +98,18 @@ function HomePage() {
         </ul>
       </div>
     </aside>
-
-    <main className="posts">
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-      <div className="post">
-        <h2>NBA 2025</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a felis nec sapien...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-
-      <div className="post">
-        <h2>Master Chef 2028</h2>
-        <p>Praesent tincidunt, sapien sed convallis egestas, ex augue feugiat metus...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
-
-      <div className="post">
-        <h2>Pajero 2030</h2>
-        <p>Mobil masa depan dengan teknologi AI terintegrasi, desain sporty, dan hemat energi...</p>
-        <div className="actions">
-          ❤️ 0 &nbsp; 💬 0
-        </div>
-      </div>
+    <main className='posts'>
+      {post.map((item, index) => (
+        <Postdesk title={item.title} content={item.content} like={item.like} />
+      ))}
     </main>
   </div>
 
-  <div>
+  {/* <div>
     <p className='hidden'>
       aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     </p>
-  </div>
+  </div> */}
   {/* <footer>
     <div className="footer-left">
       © 2025 YourWebsite. All rights reserved.
@@ -125,5 +125,3 @@ function HomePage() {
     </>
   )
 }
-
-export default HomePage

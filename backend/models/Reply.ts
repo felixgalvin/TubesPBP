@@ -40,9 +40,9 @@ export class Reply extends Model {
     declare commentReply: string;
     
     @Column({
-        type: DataType.BOOLEAN,
+        type: DataType.INTEGER,
         allowNull: false,
       })
-      declare likeReply: boolean;
+      declare likeReply: number;
 
 }

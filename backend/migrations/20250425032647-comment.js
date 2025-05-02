@@ -32,7 +32,7 @@ export default {
         allowNull: false,
       },
       likeComment: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
     });
