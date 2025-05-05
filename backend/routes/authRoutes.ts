@@ -1,9 +1,9 @@
 // routes/authRoutes.ts
 import express from "express";
 import multer from "multer";
-import { signup } from "../controller/authRegister";
-import { login } from "../controller/authLogin";
-import { getUserData } from "../controller/authUser";
+import { signup } from "../controller/AuthRegister";
+import { login } from "../controller/AuthLogin";
+import { getUserData } from "../controller/AuthUser";
 
 const router = express.Router();
 

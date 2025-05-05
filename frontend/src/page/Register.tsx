@@ -74,10 +74,10 @@ const RegisterForm: React.FC = () => {
         <label>Gender</label>
         <div className="gender-options">
           <label>
-            <input type="radio" name="gender" value="male" required onChange={handleChange} /> Male
+            <input type="radio" name="gender" value="MALE" required onChange={handleChange} /> Male
           </label>
           <label>
-            <input type="radio" name="gender" value="Female" required onChange={handleChange} /> Female
+            <input type="radio" name="gender" value="FEMALE" required onChange={handleChange} /> Female
           </label>
         </div>
 

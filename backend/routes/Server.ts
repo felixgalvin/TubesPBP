@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import userRoutes from "./authRoutes"; // GANTI sesuai nama file router kamu
+import userRoutes from "./AuthRoutes"; // GANTI sesuai nama file router kamu
 import { Sequelize } from "sequelize-typescript";
 import config from "../config/config.json";
 import{User} from "../models/User";

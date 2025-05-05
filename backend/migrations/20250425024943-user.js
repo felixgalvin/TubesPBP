@@ -23,7 +23,7 @@ export default {
         allowNull: false,
       },
       gender: {
-        type: Sequelize.ENUM("male", "Female"),
+        type: Sequelize.ENUM("MALE", "FEMALE"),
         allowNull: false,
       },
       profileImage: {

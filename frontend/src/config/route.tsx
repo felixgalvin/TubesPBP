@@ -4,7 +4,6 @@ import Register from "../page/Register";
 import {HomePage} from "../page/HomePage";
 
 const isAuthenticated = localStorage.getItem("token") !== null; 
-// const isAuthenticated = true; // Set to true for testing purposes
 
 const Routers = createBrowserRouter([
   {
