@@ -34,7 +34,7 @@ export const LoginPage = () => {
       localStorage.setItem("token", data.token);
       if (!data.user) {
         alert("Login berhasil!");
-        navigate("/home"); // perhatikan ini
+        navigate("/homeLogin");
       }
     } catch (err: any) {
       console.error("Login error:", err);
@@ -71,7 +71,7 @@ export const LoginPage = () => {
           <Link to="/register">
             <button className="button5">Register</button>
           </Link>
-          <Link to="/">
+          <Link to="/home">
             <button className="button6">Home here</button>
           </Link>
         </form>

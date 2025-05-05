@@ -3,13 +3,13 @@ import { LoginPage } from "../page/LoginPage";
 import Register from "../page/Register";
 import {HomePage} from "../page/HomePage";
 
-// const isAuthenticated = localStorage.getItem("token") !== null; 
-const isAuthenticated = true; // Set to true for testing purposes
+const isAuthenticated = localStorage.getItem("token") !== null; 
+// const isAuthenticated = true; // Set to true for testing purposes
 
 const Routers = createBrowserRouter([
   {
     path: "/",
-    element: <Register />,
+    element: <HomePage />,
     // element: isAuthenticated ? <HomePage /> : <Navigate to="/login" />,
   },
   {
@@ -21,8 +21,9 @@ const Routers = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/register",
-    element: <RegisterPage />,
+    path: "/homeLogin",
+        element: isAuthenticated ? <HomePage /> : <Navigate to="/login" />,
+
   },
 ]);
 
