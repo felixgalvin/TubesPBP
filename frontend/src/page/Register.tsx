@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "../style/Register.css";
+import { Link } from 'react-router-dom';
 
 const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -65,11 +66,11 @@ const RegisterForm: React.FC = () => {
         <label htmlFor="email">Email</label>
         <input type="email" name="email" id="email" required onChange={handleChange} />
 
-        <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" required onChange={handleChange} />
+          <label htmlFor="password">Password</label>
+          <input type="password" name="password" id="password" required onChange={handleChange} />
 
-        <label htmlFor="username">Username</label>
-        <input type="text" name="username" id="username" required onChange={handleChange} />
+          <label htmlFor="username">Username</label>
+          <input type="text" name="username" id="username" required onChange={handleChange} />
 
         <label>Gender</label>
         <div className="gender-options">

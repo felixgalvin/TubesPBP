@@ -125,6 +125,44 @@ export const HomePage = () => {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+      // e.preventDefault();
+      // const form = new FormData();
+  
+      // form.append("email", formData.email);
+      // form.append("password", formData.password);
+      // form.append("username", formData.username);
+      // form.append("gender", formData.gender);
+      // if (formData.profileImage) {
+      //   form.append("profileImage", formData.profileImage);
+      // }
+  
+  
+      // fetch("/register", {
+      //   method: "POST",
+      //   headers: {
+      //     'Content-Type': 'application/json', // Do not set Content-Type for FormData
+      //     'authorization': 'Bearer ' + localStorage.getItem('token'), // Optional: Include token if needed
+      //   },
+        
+      //   body: form,
+      // })
+      //   .then(async (res) => {
+      //     if (!res.ok) {
+      //       const error = await res.json();
+      //       throw new Error(error.message || "Register failed");
+      //     }
+      //     return res.json();
+      //   })
+      //   .then((data) => {
+      //     alert("Registration successful");
+      //   })
+      //   .catch((err) => {
+      //     console.error("Error detail:", err);
+      //     alert("Registration failed: " + err.message);
+      //   });
+    };
+
   return (
     <>
       <div className="navbar">
