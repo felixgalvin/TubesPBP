@@ -1,6 +1,5 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
 import React, { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import "../style/Register.css";
 
 const RegisterForm: React.FC = () => {
@@ -11,6 +10,9 @@ const RegisterForm: React.FC = () => {
     gender: "",
     profileImage: null as File | null,
   });
+
+  // Inisialisasi navigate di luar handleSubmit
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, files } = e.target;
@@ -24,7 +26,7 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const form = new FormData();
-
+    
     form.append("email", formData.email);
     form.append("password", formData.password);
     form.append("username", formData.username);
@@ -33,14 +35,8 @@ const RegisterForm: React.FC = () => {
       form.append("profileImage", formData.profileImage);
     }
 
-
-    fetch("/register", {
+    fetch("/api/register", {
       method: "POST",
-      headers: {
-        'Content-Type': 'application/json', // Do not set Content-Type for FormData
-        'authorization': 'Bearer ' + localStorage.getItem('token'), // Optional: Include token if needed
-      },
-      
       body: form,
     })
       .then(async (res) => {
@@ -52,15 +48,17 @@ const RegisterForm: React.FC = () => {
       })
       .then((data) => {
         alert("Registration successful");
+        navigate("/login"); // Redirect to login page after successful registration
       })
       .catch((err) => {
         console.error("Error detail:", err);
         alert("Registration failed: " + err.message);
       });
-    
   };
 
   return (
+    <section className="body">
+
     <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -79,16 +77,21 @@ const RegisterForm: React.FC = () => {
             <input type="radio" name="gender" value="male" required onChange={handleChange} /> Male
           </label>
           <label>
-            <input type="radio" name="gender" value="female" required onChange={handleChange} /> Female
+            <input type="radio" name="gender" value="Female" required onChange={handleChange} /> Female
           </label>
         </div>
 
         <label htmlFor="profileImage">Profile Image</label>
         <input type="file" name="profileImage" id="profileImage" accept="image/*" onChange={handleChange} />
 
-        <button type="submit">Register</button>
+        <button type="submit" className="button1">Register</button>
+        <Link to="/login">
+          <button className="button3">Log In Page</button>
+        </Link>
       </form>
+
     </div>
+    </section>
   );
 };
 

@@ -8,10 +8,6 @@ import{User} from "../models/User";
 import{Reply} from "../models/Reply";
 import{Post} from "../models/Post";
 import{Comment} from "../models/Comment";
-
-
-// const config = require("../config/config.json");
-
 import { Dialect } from "sequelize"; // Add this import if not already present
 
 const sequelize = new Sequelize({
@@ -22,7 +18,6 @@ const sequelize = new Sequelize({
 
 sequelize.addModels([User]);
 
-
 const app = express();
 const PORT = 3000;
 
@@ -32,8 +27,66 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
 // REGISTER ROUTES
-app.use("/", userRoutes); // INI WAJIB AGAR /register bisa diakses
+app.use("/api", userRoutes); // INI WAJIB AGAR /register bisa diakses
+
+
+async function getUserById(user_id: string) {
+  await sequelize.sync();
+  
+  const user = await User.findAll({
+      where: {user_id}
+  })
+  return user;
+}
+
+app.get("/users/:id", async (req, res, next) => {
+  try {
+    const user = await getUserById(req.params.id);
+
+    if (!user) {
+      return next(new Error("ToDoNotFound"));
+    }
+
+    res.status(200).json(user);
+    return;
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/users", async (req, res, next) => {
+  try {
+    const users = await User.findAll();
+
+    if (!users) {
+      return next(new Error("UserNotFound"));
+    }
+
+    res.status(200).json(users);
+    return;
+
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/users", async (req, res, next) => {
+  try {
+    const users = await User.findAll();
+
+    if (!users) {
+      return next(new Error("UserNotFound"));
+    }
+
+    res.status(200).json(users);
+    return;
+
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+

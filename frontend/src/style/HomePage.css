@@ -35,7 +35,7 @@ body {
   margin-right: 10px;
 }
 
-.user-icon {
+.user-profile-image {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -66,6 +66,7 @@ body {
 
 
 .popular-btn {
+  margin: 0;
   width: 100%;
   padding: 10px;
   background-color: #0079d3;
@@ -97,9 +98,11 @@ body {
 .posts {
   flex-grow: 1;
   margin-left: 80px;
+  border: black 2px solid;
 }
 
 .post {
+  border: blue 2px solid;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -124,6 +127,10 @@ body {
   opacity: 0;
   cursor: default;
   pointer-events: none;
+}
+
+.button2{
+  width: 100%;
 }
 
 

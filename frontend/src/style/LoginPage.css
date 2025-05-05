@@ -22,7 +22,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
-    height: 290px;
+    height: 320px;
 }
 
 h2 {
@@ -47,6 +47,7 @@ h2 {
 }
 
 .button {
+    margin: 0;
     width: 100%;
     padding: 10px;
     background-color: #4CAF50;
@@ -55,20 +56,35 @@ h2 {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-
+    margin-bottom: 20px;
 }
 
-.button2 {
-    width: 100%;
-    padding: 20px;
-    background-color: #ffffff;
-    color: rgb(22, 0, 224);
+.button5 {
+    width: 40%;
+    padding: 10px;
+    background-color: #0984e3;
+    color: white;
     border: none;
     border-radius: 5px;
-    font-size: 9px;
+    font-weight: bold;
     cursor: pointer;
-    text-decoration: underline;
+    transition: background 0.3s;
+    margin-left: 5%;
 }
+
+.button6{
+    width: 40%;
+    padding: 10px;
+    background-color: #0984e3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: 10%;
+}
+
 
 .button:hover {
     background-color: #5b86a9;

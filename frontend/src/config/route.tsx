@@ -1,27 +1,27 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { LoginPage } from "../page/LoginPage";
-// import Register from "../page/RegisterPage";
-import {HomePage} from "../page/HomePage";
+import { HomePage } from "../page/HomePage";
+import RegisterPage from "../page/Register"; // Uncomment when needed
 
-// const isAuthenticated = localStorage.getItem("token") !== null; 
+// Cek autentikasi: token tersimpan di localStorage
+const isAuthenticated = localStorage.getItem("token") !== null;
+// const isAuthenticated = true;
 
 const Routers = createBrowserRouter([
   {
     path: "/",
-    // element: isAuthenticated ? <HomePage /> : <Navigate to="/login" />,
-  },
+    element: <HomePage />,  },
   {
     path: "/login",
     element: <LoginPage />,
   },
   {
-    // path: "/register",
-    // element: <Register />,
+    path: "/home",
+    element: isAuthenticated ? <HomePage /> : <Navigate to="/login" />,
   },
   {
-    path: "/home",
-    // element: isAuthenticated ? <HomePage /> : <Navigate to="/login" />,
-    element: <HomePage />,
+    path: "/register",
+    element: <RegisterPage />,
   },
 ]);
 
