@@ -33,7 +33,7 @@ export const LoginPage = () => {
       const data = await login(formData.email, formData.password);
       localStorage.setItem("token", data.token);
       if (!data.user) {
-        navigate("/homeLogin");
+        navigate("/user");
         alert("Login berhasil!");
       }
     } catch (err: any) {
@@ -71,7 +71,7 @@ export const LoginPage = () => {
           <Link to="/register">
             <button className="button5">Register</button>
           </Link>
-          <Link to="/home">
+          <Link to="/">
             <button className="button6">Home here</button>
           </Link>
         </form>

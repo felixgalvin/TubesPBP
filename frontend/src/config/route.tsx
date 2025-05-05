@@ -20,9 +20,11 @@ const Routers = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/homeLogin",
+    path: "/user",
         element: isAuthenticated ? <HomePage /> : <Navigate to="/login" />,
-
+        children: [
+          // { path: "/post", element: <PostPage /> },
+        ]
   },
 ]);
 
