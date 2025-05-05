@@ -33,8 +33,8 @@ export const LoginPage = () => {
       const data = await login(formData.email, formData.password);
       localStorage.setItem("token", data.token);
       if (!data.user) {
-        alert("Login berhasil!");
         navigate("/homeLogin");
+        alert("Login berhasil!");
       }
     } catch (err: any) {
       console.error("Login error:", err);

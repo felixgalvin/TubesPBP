@@ -3,8 +3,6 @@ import { Request, Response } from "express";
 import { v4 } from "uuid";
 import { Sequelize } from "sequelize-typescript";
 
-export type StatusGender = "MALE" | "FEMALE";
-
 @Table({
     tableName: "user", timestamps: false
 })
@@ -35,10 +33,10 @@ export class User extends Model {
     declare username: string;
     
     @Column({
-        type: DataType.STRING,
+        type: DataType.ENUM("MALE", "FEMALE"),
         allowNull: false,
     })
-    declare gender: StatusGender;
+    declare gender: string;
 
     @Column({
         type: DataType.STRING,
