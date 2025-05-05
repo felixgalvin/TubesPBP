@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import React, { useState } from "react";
 import "../style/Register.css";
+import { Link } from 'react-router-dom';
 
 const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -61,33 +62,35 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" required onChange={handleChange} />
+    <div className='body'>
+      <div className="form-container">
+        <h2>Register</h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <label htmlFor="email">Email</label>
+          <input type="email" name="email" id="email" required onChange={handleChange} />
 
-        <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" required onChange={handleChange} />
+          <label htmlFor="password">Password</label>
+          <input type="password" name="password" id="password" required onChange={handleChange} />
 
-        <label htmlFor="username">Username</label>
-        <input type="text" name="username" id="username" required onChange={handleChange} />
+          <label htmlFor="username">Username</label>
+          <input type="text" name="username" id="username" required onChange={handleChange} />
 
-        <label>Gender</label>
-        <div className="gender-options">
-          <label>
-            <input type="radio" name="gender" value="male" required onChange={handleChange} /> Male
-          </label>
-          <label>
-            <input type="radio" name="gender" value="female" required onChange={handleChange} /> Female
-          </label>
-        </div>
-
-        <label htmlFor="profileImage">Profile Image</label>
-        <input type="file" name="profileImage" id="profileImage" accept="image/*" onChange={handleChange} />
-
-        <button type="submit">Register</button>
-      </form>
+          <label>Gender</label>
+          <div className="gender-options">
+            <label>
+              <input type="radio" name="gender" value="male" required onChange={handleChange} /> Male
+            </label>
+            <label>
+              <input type="radio" name="gender" value="female" required onChange={handleChange} /> Female
+            </label>
+          </div>
+          <label htmlFor="profileImage">Profile Image</label>
+          <input type="file" name="profileImage" id="profileImage" accept="image/*" onChange={handleChange} />
+          <Link to="/login">
+            <button type="submit">Register</button>
+          </Link>
+        </form>
+      </div>
     </div>
   );
 };

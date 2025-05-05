@@ -31,6 +31,22 @@ body {
   align-items: center;
 }
 
+.upload-button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100px;
+  height: 45px;
+}
+
+.upload-button:hover {
+  background-color: #0056b3;
+}
+
 .username span {
   margin-right: 10px;
 }

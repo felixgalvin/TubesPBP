@@ -3,7 +3,7 @@
     font-family: Arial, sans-serif;
   }
   
-  body {
+  .body {
     background: #f5f6fa;
     display: flex;
     justify-content: center;
