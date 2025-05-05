@@ -22,6 +22,6 @@ export default{
   },
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.dropTable("Sessions");
+    queryInterface.dropTable("sessions");
   },
 };
