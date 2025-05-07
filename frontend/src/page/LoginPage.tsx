@@ -43,7 +43,7 @@ export const LoginPage = () => {
   };  
 
   return (
-    <div className="body">
+    <div className="bodyLogin">
       <div className="login-container">
         <h2>Reddit Login</h2>
         <form onSubmit={handleSubmit}>

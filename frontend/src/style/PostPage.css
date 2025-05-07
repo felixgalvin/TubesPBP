@@ -3,8 +3,8 @@
     font-family: Arial, sans-serif;
   }
   
-  .bodyRegis {
-    background-color: #cfd2d2;
+  .bodyPost {
+    background: #f5f6fa;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -48,7 +48,6 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
-    padding: 5px;
   }
   
   .gender-options label {

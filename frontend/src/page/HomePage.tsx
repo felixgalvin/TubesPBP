@@ -17,14 +17,34 @@ type User = {
 }
  
 export const Postdesk = ({ title, content, like }: Post) => {
+  const [user, setUser] = useState<User | null>(null);
+
   return (
-    <div className="post">
-      <h2>{title}</h2>
-      <p>{content}</p>
-      <div className="actions">
-        ❤️ {like} &nbsp; 💬
-      </div>
-    </div>
+    <>
+    {user ? (
+      <>
+        <div className="post">
+        <h2>{title}</h2>
+        <p>{content}</p>
+        <div className="actions">
+          <button className='buttonHome'>❤️ {like} &nbsp;</button>
+          <button className='buttonHome'>💬</button>
+        </div>
+        </div>
+      </>
+      ) : (
+      <>
+        <div className="post">
+          <h2>{title}</h2>
+          <p>{content}</p>
+          <div className="actions">
+            ❤️ {like} &nbsp; <button className='buttonHome'>💬</button>
+          </div>
+        </div>
+      </>
+      )
+    }
+    </>
   );
 };
 
@@ -127,6 +147,7 @@ export const HomePage = () => {
 
   return (
     <>
+    <section className="bodyHome">
     <div className='nav-container'>
       <div className="navbar">
         <div className="username">
@@ -141,6 +162,9 @@ export const HomePage = () => {
                 className="user-profile-image"
               />
               <button className="button2" onClick={handleLogout}>Logout</button>
+              <Link to="/post">
+                <button className="buttonPOST">Create Post</button>
+              </Link>
             </>
           ) : (
             <>
@@ -160,7 +184,7 @@ export const HomePage = () => {
         <aside className="sidebar">
           <button className="popular-btn">Popular</button>
           <div className="topics">
-            <h3>Topik:</h3>
+            <h3>Topic:</h3>
             <ul>
               <li>Sports</li>
               <li>Game</li>
@@ -176,6 +200,7 @@ export const HomePage = () => {
           ))}
         </main>
       </div>
+    </section>
     </>
   );
 }

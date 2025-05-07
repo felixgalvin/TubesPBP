@@ -34,6 +34,7 @@ export default {
       likeComment: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
     });
   },

@@ -31,7 +31,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       email,
       password: hashedPassword,
       username,
-      gender,
+      gender, 
       profileImage
     });
 

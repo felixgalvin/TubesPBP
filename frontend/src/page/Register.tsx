@@ -57,7 +57,7 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <section className="body">
+    <section className="bodyRegis">
 
     <div className="form-container">
       <h2>Register</h2>

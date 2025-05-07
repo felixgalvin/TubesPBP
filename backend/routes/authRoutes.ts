@@ -4,6 +4,7 @@ import multer from "multer";
 import { signup } from "../controller/AuthRegister";
 import { login } from "../controller/AuthLogin";
 import { getUserData } from "../controller/AuthUser";
+import { post } from "../controller/AuthPost";
 
 const router = express.Router();
 
@@ -21,5 +22,8 @@ router.post("/register", upload.single("profileImage"), signup);
 // Login user (tidak pakai gambar)
 router.post("/login", login);
 router.get("/user", getUserData);
+
+// Create post (tidak pakai gambar)
+router.post("/post", post);
 
 export default router;

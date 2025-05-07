@@ -1,11 +1,12 @@
 /* styles.css */
 
 /* navbar */
-body {
+.bodyHome {
   width: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #cfd2d2;
+  padding: 5px;
 }
 
 .nav-container {
@@ -131,7 +132,31 @@ body {
   width: 100%;
 }
 
+.buttonHome {
+  width:40px;
+  height:40px;
+  background-color: #0079d3;
+  margin-left: auto;
+  border-radius: 30px;
+}
 
+.buttonLike {
+  width:30px;
+  height:30px;
+  background-color: #ffffff;
+  margin-left: auto;
+  border-radius: 30px;
+}
+
+.buttonHome:hover {
+  background-color: #58a3ee;
+  transition: background-color 0.3s ease;
+}
+
+.buttonPOST {
+  width: 100%;
+  margin-left: auto;
+}
 /* fotter */
 /* footer {
   width: 100%;
