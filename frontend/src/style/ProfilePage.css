@@ -1,0 +1,61 @@
+/* Styling utama untuk container profil */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Judul halaman profil */
+  .profile-container h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+  
+  /* Gambar profil */
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  /* Section informasi pengguna */
+  .profile-details {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .profile-details h2 {
+    color: #333;
+    margin: 10px 0;
+  }
+  
+  .profile-details p {
+    color: #666;
+    margin: 8px 0;
+    font-size: 1rem;
+  }
+  
+  /* Link ke halaman edit profile */
+  .edit-profile-link {
+    margin-top: 20px;
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+  }
+  
+  .edit-profile-link:hover {
+    color: #004d99;
+  }  
