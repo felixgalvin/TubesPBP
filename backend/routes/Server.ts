@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import userRoutes from "./AuthRoutes"; // GANTI sesuai nama file router kamu
@@ -13,16 +13,19 @@ import { Dialect } from "sequelize"; // Add this import if not already present
 const sequelize = new Sequelize({
   ...config.development,
   dialect: "postgres",
-  models: [User, Reply,] // Explicitly cast dialect to Dialect type
+  models: [User, Reply, Post] // Explicitly cast dialect to Dialect type
 });
 
 sequelize.addModels([User]);
+sequelize.addModels([Reply]);
+sequelize.addModels([Post]);
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
@@ -86,7 +89,26 @@ app.get("/users", async (req, res, next) => {
   }
 });
 
+app.post("/users/post", async (req, res, next) => {
+  try {
+    const { user_Id, title, post, like, topik } = req.body;
+    const newPost = await Post.create({
+      user_Id,  
+      title,
+      post,
+      like,
+      topik
+    });
+
+    res.status(201).json(newPost);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 

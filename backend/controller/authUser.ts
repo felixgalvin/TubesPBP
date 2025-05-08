@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 import { c } from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
+import { create } from "domain";
+import { CreatedAt } from "sequelize-typescript";
 
 const JWT_SECRET = "your_jwt_secret_key"; // Sebaiknya gunakan .env untuk menyimpan secret
 
@@ -29,9 +31,12 @@ export const getUserData = async (req: Request, res: Response): Promise<void> =>
     res.status(200).json({
       message: "User data fetched successfully", // Menambahkan pesan sukses
       data: {
-        username: user.username,
+        user_id: user.user_id,
         email: user.email,
+        username: user.username,
+        gender: user.gender,
         profileImage: user.profileImage,
+        CreatedAt: user.createdAt,
       }
     });
   } catch (error) {
@@ -59,9 +64,12 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
     res.status(200).json({
       message: "User data fetched",
       data: {
-        username: user.username,
+        user_id: user.user_id,
         email: user.email,
+        username: user.username,
+        gender: user.gender,
         profileImage: user.profileImage,
+        createdAt: user.createdAt,
       }
     });
   } catch (error) {

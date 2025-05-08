@@ -4,91 +4,113 @@ import "../style/PostPage.css";
 
 const PostPage: React.FC = () => {
   const [formData, setFormData] = useState({
+    user_Id: localStorage.getItem("userId") || "",  // Getting userId from localStorage
     title: "",
-    post: "",
+    post: "",  // Renaming 'postContent' to 'post'
     topik: "",
   });
 
-  // Inisialisasi navigate di luar handleSubmit
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, files } = e.target;
-      setFormData({ ...formData, [name]: value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const form = new FormData();
-    
-    form.append("title", formData.title);
-    form.append("post", formData.post);
-    form.append("topik", formData.topik);
 
-    fetch("/api/post", {
-      method: "POST",
-      body: form,
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error.message || "Post create failed");
+    // No need for FormData here. Just use a plain object to send JSON
+    const formPayload = {
+      user_id: formData.user_Id,
+      title: formData.title,
+      post: formData.post,  // Renaming 'postContent' back to 'post'
+      topik: formData.topik,
+      like: 0,
+    };
+
+    const fetchUserData = async (token: string, formData: any) => {
+      try {
+        const response = await fetch("/api/user/post", {
+          method: "POST",
+          body: JSON.stringify(formData),  // Send formData as JSON
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Post creation failed");
         }
-        return res.json();
-      })
-      .then((data) => {
-        alert("Post Created successful");
-        navigate("/user"); 
-      })
-      .catch((err) => {
-        console.error("Error detail:", err);
-        alert("Post failed: " + err.message);
-      });
+
+        const data = await response.json();
+        alert("Post Created successfully");
+        navigate("/user");
+      } catch (error) {
+        console.error("Error detail:", error);
+        alert("Post failed: " + (error instanceof Error ? error.message : String(error)));
+      }
+    };
+
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      fetchUserData(token, formPayload);  // Passing the plain object formPayload
+    } else {
+      alert("No token found. Please log in first.");
+    }
   };
 
   return (
-    <section className="bodyPost">
+    <section className="body-post">
+      <div className="form-container">
+        <h2>CREATE POST</h2>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            required
+            onChange={handleChange}
+          />
 
-    <div className="form-container">
-      <h2>CREATE POST</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label htmlFor="title">Title</label>
-        <input type="title" name="title" id="title" required onChange={handleChange} />
+          <label htmlFor="postContent">Content</label>
+          <input
+            type="text"
+            name="post"
+            id="postContent"
+            required
+            onChange={handleChange}
+          />
 
-        <label htmlFor="desc">Content</label>
-        <input type="desc" name="desc" id="desc" required onChange={handleChange} />
+          <label htmlFor="topik">Genre</label>
+          <div className="gender-options">
+            <select
+              name="topik"
+              id="topik"
+              onChange={handleChange}
+              required
+              value={formData.topik} // make it controlled
+            >
+              <option value="" disabled hidden>-- Select Genre --</option>
+              <option value="Sports">Sports</option>
+              <option value="Game">Game</option>
+              <option value="Music">Music</option>
+              <option value="Otomotif">Otomotif</option>
+              <option value="War">War</option>
+              <option value="Daily Life">Daily Life</option>
+            </select>
+          </div>
 
-        <label>Genre</label>
-        <div className="gender-options">
-          <label>
-            <input type="radio" name="topik" value="Sports" required onChange={handleChange} /> Sports
-          </label>
-          <label>
-            <input type="radio" name="topik" value="Game" required onChange={handleChange} /> Game
-          </label>
-          <label>
-            <input type="radio" name="topik" value="Food" required onChange={handleChange} /> Food
-          </label>
-          <label>
-            <input type="radio" name="topik" value="Music" required onChange={handleChange} /> Music
-          </label>
-          <label>
-            <input type="radio" name="topik" value="Otomotif" required onChange={handleChange} /> Otomotif
-          </label>
-          <label>
-            <input type="radio" name="topik" value="War" required onChange={handleChange} /> War
-          </label>
-          <label>
-            <input type="radio" name="topik" value="Daily Life" required onChange={handleChange} /> Daily Life
-          </label>
-        </div>
 
-        <button type="submit" className="button1">Post</button>
-        <Link to="/user">
-          <button className="button3">Cancel</button>
-        </Link>
-      </form>
-    </div>
+          <button type="submit" className="button-primary">Post</button>
+          <Link to="/user">
+            <button type="button" className="button-cancel">Cancel</button>
+          </Link>
+        </form>
+      </div>
     </section>
   );
 };

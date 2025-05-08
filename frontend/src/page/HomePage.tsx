@@ -5,121 +5,121 @@ import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import profileImage from '../assets/profileImage.jpeg'
 
-type Post = {
-  title: string,
-  content: string,
-  like: number,
-}
-
 type User = {
+  user_id: string;
+  email: string;
   username: string;
+  gender: string;
   profileImage: string;
+  createdAt: string;
 }
- 
-export const Postdesk = ({ title, content, like }: Post) => {
-  const [user, setUser] = useState<User | null>(null);
 
+type Post = {
+  post_id: string;
+  title: string;
+  post: string;
+  like: number;
+  topik: string;
+};
+
+type PostProps = Post & {
+  onLike: (postId: string) => void;
+};
+
+export const Postdesk = ({ post_id, title, post, like, topik, onLike }: PostProps) => {
   return (
-    <>
-    {user ? (
-      <>
-        <div className="post">
-        <h2>{title}</h2>
-        <p>{content}</p>
-        <div className="actions">
-          <button className='buttonHome'>❤️ {like} &nbsp;</button>
-          <button className='buttonHome'>💬</button>
-        </div>
-        </div>
-      </>
-      ) : (
-      <>
-        <div className="post">
-          <h2>{title}</h2>
-          <p>{content}</p>
-          <div className="actions">
-            ❤️ {like} &nbsp; <button className='buttonHome'>💬</button>
-          </div>
-        </div>
-      </>
-      )
-    }
-    </>
+    <div className="post">
+      <h2>{title}</h2>
+      <p>{post}</p>
+      <span className="topic">{topik}</span>
+      <div className="actions">
+        <button className="buttonHome" onClick={() => onLike(post_id)}>❤️ {like}</button>
+        <button className="buttonHome">💬</button>
+      </div>
+    </div>
   );
 };
+
 
 export const HomePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
-
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedTopik, setSelectedTopik] = useState<string | null>(null);  // Ganti 'selectedTopic' menjadi 'selectedTopik'
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    navigate('/login'); // Redirect to login page
+    navigate('/auth'); // Redirect to login page
   };
 
-  const post: Post[] = [
-    {
-      title:"NBA 2025",
-      content:"Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"BUCINLUCOK",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"YESIRRR",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"CRYPTO BOSS COMINGGG",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"PAJERO",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"NBSA 2025",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"SIJDHUhhdhhdhd 5",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"NBSA 2025",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"ITHB CORE",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
-    {
-      title:"Nuijsd",
-      content:"boston jelek Calvin jelek hehehehehehhehe hehehehhehehehehehe hheehehehehhecoco hehehehe hehehe ehhheheh hehehhe ehehe hehe",
-      like:12
-    },
+  const handleTopikClick = (topik: string) => {  // Ganti 'topic' menjadi 'topik'
+    if (selectedTopik === topik) {
+      setSelectedTopik(null); // Reset if the same topik is clicked
+    } else {
+      setSelectedTopik(topik); // Set selected topik
+    }
+  };
 
-  ];
+  const handleLike = async (postId: string) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/post/${postId}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update like');
+      }
+
+      const data = await response.json();
+      console.log('Like updated:', data);
+
+      // Perbarui jumlah like pada state posts
+      setPosts(prevPosts =>
+        prevPosts.map(p =>
+          p.post_id === postId ? { ...p, like: data.like } : p
+        )
+      );
+    } catch (error) {
+      console.error('Error updating like:', error);
+    }
+  };
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       fetchUserData(token);
     }
+    fetchPosts();
   }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('api/user/post', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+
+      const data = await response.json();
+      console.log('Posts:', data);
+
+      setPosts(data); // Perbaiki jika data yang diterima dalam objek `data`
+    } catch (error) {
+      setError('Error fetching posts');
+      console.error('Error fetching posts:', error);
+    }
+  };
 
   const fetchUserData = async (token: string) => {
     try {
@@ -137,8 +137,8 @@ export const HomePage = () => {
       const data = await response.json();
       console.log('User data:', data);
 
-      // Set the correct part of the response
-      setUser(data.data); // Set user data as the 'data' part of the response
+      setUser(data.data);
+      localStorage.setItem('userId', data.data.user_id);
     } catch (error) {
       setError('Error fetching user data');
       console.error('Error:', error);
@@ -147,70 +147,114 @@ export const HomePage = () => {
 
   return (
     <>
-    <section className="bodyHome">
-    <div className='nav-container'>
-      <div className="navbar">
-        <div className="username">
-          {user ? (
-            <>
-              <span>{user.username}</span>
+      <section className="bodyHome">
+        <div className='nav-container'>
+          <Link to="post">
+            <button className="buttonPOST">Create Post</button>
+          </Link>
+          <div className="navbar">
+            <div className="username">
+              {user ? (
+                <>
+                  <span>{user.username}</span>
 
-              <Link to="/profile">
-                <img
-                  src={user.profileImage
-                    ? `http://localhost:3000/uploads/${user.profileImage}`
-                    : profileImage}
-                  alt="Profile"
-                  className="user-profile-image"
-                  style={{ cursor: 'pointer' }}
-                />
-              </Link>
+                  <Link to="profile">
+                    <img
+                      src={user.profileImage
+                        ? `http://localhost:3000/uploads/${user.profileImage}`
+                        : profileImage}
+                      alt="Profile"
+                      className="user-profile-image"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </Link>
 
-              <button className="button2" onClick={handleLogout}>Logout</button>
-              <Link to="/post">
-                <button className="buttonPOST">Create Post</button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <span>Guest</span>
-              <img src={profileImage} alt="Guest Profile" className="user-profile-image" />
-              
-              <Link to="/login">
-                <button className="button2">Login Here</button>
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+                  <button className="button2" onClick={handleLogout}>Logout</button>
+                </>
+              ) : (
+                <>
+                  <span>Guest</span>
+                  <img src={profileImage} alt="Guest Profile" className="user-profile-image" />
 
-
-      <div className="container">
-        <aside className="sidebar">
-          <button className="popular-btn">Popular</button>
-          <div className="topics">
-            <h3>Topic:</h3>
-            <ul>
-              <li>Sports</li>
-              <li>Game</li>
-              <li>Food</li>
-              <li>Otomotif</li>
-            </ul>
+                  <Link to="/auth/login">
+                    <button className="button2">Login Here</button>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
-        </aside>
+        </div>
 
-        <main className='posts'>
-          {post.map((item, index) => (
-            <Postdesk key={index} title={item.title} content={item.content} like={item.like} />
-          ))}
-        </main>
-      </div>
-    </section>
+        <div className="container">
+          <aside className="sidebar">
+            <button className="popular-btn">Popular</button>
+            <div className="topics">
+              <h3>Topic:</h3>
+              <ul>
+                <li
+                  onClick={() => handleTopikClick("Sports")}
+                  className={selectedTopik === "Sports" ? "selected" : ""}
+                >
+                  Sports
+                </li>
+                <li
+                  onClick={() => handleTopikClick("Game")}
+                  className={selectedTopik === "Game" ? "selected" : ""}
+                >
+                  Game
+                </li>
+                <li
+                  onClick={() => handleTopikClick("Music")}
+                  className={selectedTopik === "Music" ? "selected" : ""}
+                >
+                  Music
+                </li>
+                <li
+                  onClick={() => handleTopikClick("Otomotif")}
+                  className={selectedTopik === "Otomotif" ? "selected" : ""}
+                >
+                  Otomotif
+                </li>
+                <li
+                  onClick={() => handleTopikClick("War")}
+                  className={selectedTopik === "War" ? "selected" : ""}
+                >
+                  War
+                </li>
+                <li
+                  onClick={() => handleTopikClick("Daily Life")}
+                  className={selectedTopik === "Daily Life" ? "selected" : ""}
+                >
+                  Daily Life
+                </li>
+                <li onClick={() => setSelectedTopik(null)}>Show All</li>
+              </ul>
+            </div>
+          </aside>
+
+          <main className='posts'>
+            {posts && posts.length > 0 ? (
+              posts
+                .filter(post => !selectedTopik || post.topik === selectedTopik)
+                .map((item, index) => (
+                  <Postdesk
+                    key={item.post_id}
+                    post_id={item.post_id}
+                    title={item.title}
+                    post={item.post}
+                    like={item.like}
+                    topik={item.topik}
+                    onLike={handleLike}
+                  />
+
+                ))
+            ) : (
+              <p>No posts available</p>
+            )}
+          </main>
+
+        </div>
+      </section>
     </>
   );
-}
-function setError(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
+};

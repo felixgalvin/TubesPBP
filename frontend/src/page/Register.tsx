@@ -48,7 +48,7 @@ const RegisterForm: React.FC = () => {
       })
       .then((data) => {
         alert("Registration successful");
-        navigate("/login"); // Redirect to login page after successful registration
+        navigate("/auth/login"); // Redirect to login page after successful registration
       })
       .catch((err) => {
         console.error("Error detail:", err);
@@ -85,7 +85,7 @@ const RegisterForm: React.FC = () => {
         <input type="file" name="profileImage" id="profileImage" accept="image/*" onChange={handleChange} />
 
         <button type="submit" className="button1">Register</button>
-        <Link to="/login">
+        <Link to="/auth/login">
           <button className="button3">Log In Page</button>
         </Link>
       </form>

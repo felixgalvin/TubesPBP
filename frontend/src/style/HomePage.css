@@ -10,22 +10,26 @@
 }
 
 .nav-container {
-  width: 91%;
-  margin-left: 70px;
+  width: 95%;
+  margin-left: 60px;
   margin-top: 30px;
-}
-
-.navbar {
   margin: 0;
   top: 0;
   background-color: #fff;
   padding: 10px 40px;
   border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
   border-radius: 12px;
+  display: inline-block;
+  align-items: center;
+  justify-content: flex-end;
 }
+
+.navbar {
+  margin-top: 7px;
+  align-items: center;
+  justify-content: flex-end;
+  float: right;
+  }
 
 .username {
   display: flex;
@@ -154,9 +158,24 @@
 }
 
 .buttonPOST {
-  width: 100%;
-  margin-left: auto;
+  background-color: #0079d3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: auto; /* Tombol pindah ke kiri */
+  margin: 0;
+  width: 100px;
 }
+
+.buttonPOST:hover {
+  background-color: #58a3ee;
+  transition: background-color 0.3s ease;
+}
+
+
 /* fotter */
 /* footer {
   width: 100%;

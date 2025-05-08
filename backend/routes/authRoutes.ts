@@ -4,7 +4,8 @@ import multer from "multer";
 import { signup } from "../controller/AuthRegister";
 import { login } from "../controller/AuthLogin";
 import { getUserData } from "../controller/AuthUser";
-import { post } from "../controller/AuthPost";
+import { post, getAllPost } from "../controller/AuthPost";
+import { countLike } from "../controller/CountLike";
 
 const router = express.Router();
 
@@ -16,14 +17,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Register user (dengan gambar)
 router.post("/register", upload.single("profileImage"), signup);
-
-// Login user (tidak pakai gambar)
 router.post("/login", login);
 router.get("/user", getUserData);
 
-// Create post (tidak pakai gambar)
-router.post("/post", post);
+router.post("/user/post", post);
+router.get("/user/post", getAllPost);
+router.put("/user/post/:postId/like", countLike);
 
 export default router;

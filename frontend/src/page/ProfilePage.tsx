@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './ProfilePage.css';
+import '../style/ProfilePage.css';
 
 const ProfilePage = () => {
   const [username, setUsername] = useState<string>("");

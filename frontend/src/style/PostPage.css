@@ -1,79 +1,113 @@
 * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
-  
-  .bodyPost {
-    background: #f5f6fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .form-container {
-    background: #ffffff;
-    padding: 30px 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2f3640;
-  }
-  
-  form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #2f3640;
-  }
-  
-  form input[type="text"],
-  form input[type="email"],
-  form input[type="password"],
-  form input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #dcdde1;
-  }
-  
-  .gender-options {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
-  
-  .gender-options label {
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-  }
-  
-  button {
-    width: 40%;
-    padding: 10px;
-    background-color: #0984e3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 10%;
-  }
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-  .button3{
-    margin-left: 5%;
-  }
-  
-  button:hover {
-    background-color: #74b9ff;
-  }
-  
+.body-post {
+  background: #f5f6fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.form-container {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.form-container:hover {
+  transform: translateY(-5px);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2f3640;
+}
+
+.form-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2f3640;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="file"],
+.form-container select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #dcdde1;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-container input[type="text"]:focus,
+.form-container input[type="email"]:focus,
+.form-container input[type="password"]:focus,
+.form-container select:focus {
+  border-color: #0984e3;
+  outline: none;
+}
+
+.gender-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.gender-options label {
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  color: #555;
+}
+
+.button-primary {
+  margin: 0;
+  margin-left: 30px;
+  width: 40%;
+  background-color: #0984e3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  text-align: center;
+}
+
+.button-primary:hover {
+  background-color: #74b9ff;
+  transform: translateY(-2px);
+}
+
+.button-primary:active {
+  transform: translateY(0);
+}
+
+.button-cancel {
+  width: 40%;
+  background-color: #ddd;
+  color: #333;
+  margin-left: 4%;
+}
+
+.button-cancel:hover {
+  transform: translateY(-2px);
+  background-color: #ccc;
+}
