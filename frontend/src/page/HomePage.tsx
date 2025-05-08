@@ -154,13 +154,18 @@ export const HomePage = () => {
           {user ? (
             <>
               <span>{user.username}</span>
-              <img
-                src={user.profileImage
-                  ? `http://localhost:3000/uploads/${user.profileImage}`
-                  : profileImage}
-                alt="Profile"
-                className="user-profile-image"
-              />
+
+              <Link to="/profile">
+                <img
+                  src={user.profileImage
+                    ? `http://localhost:3000/uploads/${user.profileImage}`
+                    : profileImage}
+                  alt="Profile"
+                  className="user-profile-image"
+                  style={{ cursor: 'pointer' }}
+                />
+              </Link>
+
               <button className="button2" onClick={handleLogout}>Logout</button>
               <Link to="/post">
                 <button className="buttonPOST">Create Post</button>
