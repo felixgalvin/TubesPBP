@@ -175,6 +175,7 @@ export const HomePage = () => {
             <>
               <span>Guest</span>
               <img src={profileImage} alt="Guest Profile" className="user-profile-image" />
+              
               <Link to="/login">
                 <button className="button2">Login Here</button>
               </Link>
