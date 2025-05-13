@@ -33,9 +33,19 @@ export const Postdesk = ({ post_id, title, post, like, topik, onLike }: PostProp
       <p>{post}</p>
       <span className="topic">{topik}</span>
       <div className="actions">
-        <button className="buttonHome" onClick={() => onLike(post_id)}>❤️ {like}</button>
-        <button className="buttonHome">💬</button>
-      </div>
+      <button
+        className="buttonHome"
+        onClick={() => onLike(post_id)}
+        disabled={!localStorage.getItem("token")}
+        style={{
+          opacity: !localStorage.getItem("token") ? 0.5 : 1,
+          cursor: !localStorage.getItem("token") ? "not-allowed" : "pointer",
+        }}
+      >
+        ❤️ {like}
+      </button>
+      <button className="buttonHome">💬</button>
+    </div>
     </div>
   );
 };
@@ -149,9 +159,14 @@ export const HomePage = () => {
     <>
       <section className="bodyHome">
         <div className='nav-container'>
-          <Link to="post">
-            <button className="buttonPOST">Create Post</button>
-          </Link>
+          {user ? (
+            <>
+              <Link to="post">
+                <button className="buttonPOST">Create Post</button>
+              </Link>
+            </>
+          ) : null}
+
           <div className="navbar">
             <div className="username">
               {user ? (
@@ -227,7 +242,7 @@ export const HomePage = () => {
                 >
                   Daily Life
                 </li>
-                <li onClick={() => setSelectedTopik(null)}>Show All</li>
+                <li onClick={() => setSelectedTopik(null)} >Show All</li>
               </ul>
             </div>
           </aside>
