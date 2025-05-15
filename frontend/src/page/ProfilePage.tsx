@@ -15,7 +15,7 @@ const ProfilePage = () => {
       const user = JSON.parse(userData);
       const userId = user.id;
 
-      fetch(`http://localhost:5000/api/user-profile/${userId}`)
+      fetch(`http://localhost:3000/api/user-profile/${userId}`)
         .then((response) => response.json())
         .then((data) => {
           setUsername(data.username);
