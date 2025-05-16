@@ -7,6 +7,7 @@ import PostPage from "../page/PostPage";
 import UserLayout from "../page/UserLayout";
 import path from "path";
 import AuthLayout from "../page/AuthLayout";
+import CommentPostPage from "../page/CommentPostPage";
 
 const isAuthenticated = localStorage.getItem("token") !== null; 
 
@@ -34,7 +35,10 @@ const Routers = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> }, // default route
       { path: "post", element: <PostPage /> },
-      { path: "profile", element: <ProfilePage /> }
+      { path: "profile", element: <ProfilePage /> },
+      { path: "post/:postId/comment", element: <CommentPostPage />,
+      }
+      
     ]
   }
   

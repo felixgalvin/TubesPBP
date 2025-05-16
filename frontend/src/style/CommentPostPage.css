@@ -1,0 +1,66 @@
+/* === Comment Page Styles === */
+
+.commentPage-container {
+  width: 70%;
+  margin: 40px auto;
+  background-color: #f6f7f8;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.commentPage-post {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.commentPage-post h2 {
+  margin-top: 0;
+}
+
+.commentPage-comments-section {
+  margin-bottom: 20px;
+}
+
+.commentPage-single-comment {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.commentPage-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.commentPage-textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  font-size: 14px;
+}
+
+.commentPage-button {
+  width: 150px;
+  background-color: #0079d3;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.commentPage-button:hover {
+  background-color: #58a3ee;
+  transition: background-color 0.3s ease;
+}

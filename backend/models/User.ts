@@ -1,4 +1,7 @@
-import {Table, Column, Model, DataType, PrimaryKey } from "sequelize-typescript";
+import {Table, Column, Model, DataType, PrimaryKey, HasMany  } from "sequelize-typescript";
+import { Post } from "./Post";
+import { Comment } from "./Comment";
+import { Reply } from "./Reply";
 import { Request, Response } from "express";
 import { v4 } from "uuid";
 import { Sequelize } from "sequelize-typescript";
@@ -50,4 +53,13 @@ export class User extends Model {
         defaultValue: DataType.NOW
     })
     declare createdAt: Date;
+
+    @HasMany(() => Post)
+    declare posts: Post[];
+
+    @HasMany(() => Comment)
+    declare comments: Comment[];
+
+    @HasMany(() => Reply)
+    declare replies: Reply[];
 }

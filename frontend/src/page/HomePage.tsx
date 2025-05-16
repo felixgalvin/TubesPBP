@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react'
-import reactLogo from '../assets/joko.svg'
-import '../style/HomePage.css'
-import { FaUserCircle } from "react-icons/fa";
+import { useState, useEffect } from 'react';
+import '../style/HomePage.css';
 import { Link, useNavigate } from 'react-router-dom';
-import profileImage from '../assets/profileImage.jpeg'
+import profileImage from '../assets/profileImage.jpeg';
 
 type User = {
   user_id: string;
@@ -12,7 +10,7 @@ type User = {
   gender: string;
   profileImage: string;
   createdAt: string;
-}
+};
 
 type Post = {
   post_id: string;
@@ -26,50 +24,51 @@ type PostProps = Post & {
   onLike: (postId: string) => void;
 };
 
-export const Postdesk = ({ post_id, title, post, like, topik, onLike }: PostProps) => {
+const Postdesk = ({ post_id, title, post, like, topik, onLike }: PostProps) => {
+  const navigate = useNavigate();
+
+  const handleCommentClick = () => {
+    navigate(`/user/post/${post_id}/comment`);
+  };
+
   return (
     <div className="post">
       <h2>{title}</h2>
       <p>{post}</p>
       <span className="topic">{topik}</span>
       <div className="actions">
-      <button
-        className="buttonHome"
-        onClick={() => onLike(post_id)}
-        disabled={!localStorage.getItem("token")}
-        style={{
-          opacity: !localStorage.getItem("token") ? 0.5 : 1,
-          cursor: !localStorage.getItem("token") ? "not-allowed" : "pointer",
-        }}
-      >
-        ❤️ {like}
-      </button>
-      <button className="buttonHome">💬</button>
-    </div>
+        <button
+          className="buttonHome"
+          onClick={() => onLike(post_id)}
+          disabled={!localStorage.getItem("token")}
+          style={{
+            opacity: !localStorage.getItem("token") ? 0.5 : 1,
+            cursor: !localStorage.getItem("token") ? "not-allowed" : "pointer",
+          }}
+        >
+          ❤️ {like}
+        </button>
+        <button className="buttonHome" onClick={handleCommentClick}>💬</button>
+      </div>
     </div>
   );
 };
-
 
 export const HomePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedTopik, setSelectedTopik] = useState<string | null>(null);  // Ganti 'selectedTopic' menjadi 'selectedTopik'
+  const [selectedTopik, setSelectedTopik] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    navigate('/auth'); // Redirect to login page
+    navigate('/auth');
   };
 
-  const handleTopikClick = (topik: string) => {  // Ganti 'topic' menjadi 'topik'
-    if (selectedTopik === topik) {
-      setSelectedTopik(null); // Reset if the same topik is clicked
-    } else {
-      setSelectedTopik(topik); // Set selected topik
-    }
+  const handleTopikClick = (topik: string) => {
+    setSelectedTopik(prev => (prev === topik ? null : topik));
   };
 
   const handleLike = async (postId: string) => {
@@ -86,9 +85,7 @@ export const HomePage = () => {
       }
 
       const data = await response.json();
-      console.log('Like updated:', data);
 
-      // Perbarui jumlah like pada state posts
       setPosts(prevPosts =>
         prevPosts.map(p =>
           p.post_id === postId ? { ...p, like: data.like } : p
@@ -99,37 +96,11 @@ export const HomePage = () => {
     }
   };
 
-
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      fetchUserData(token);
-    }
+    if (token) fetchUserData(token);
     fetchPosts();
   }, []);
-
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch('api/user/post', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
-      }
-
-      const data = await response.json();
-      console.log('Posts:', data);
-
-      setPosts(data); // Perbaiki jika data yang diterima dalam objek `data`
-    } catch (error) {
-      setError('Error fetching posts');
-      console.error('Error fetching posts:', error);
-    }
-  };
 
   const fetchUserData = async (token: string) => {
     try {
@@ -145,8 +116,6 @@ export const HomePage = () => {
       }
 
       const data = await response.json();
-      console.log('User data:', data);
-
       setUser(data.data);
       localStorage.setItem('userId', data.data.user_id);
     } catch (error) {
@@ -155,121 +124,104 @@ export const HomePage = () => {
     }
   };
 
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/user/post', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+
+      const data = await response.json();
+      setPosts(data);
+    } catch (error) {
+      setError('Error fetching posts');
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  const topiks = ["Sports", "Game", "Music", "Otomotif", "War", "Daily Life"];
+
   return (
-    <>
-      <section className="bodyHome">
-        <div className='nav-container'>
-          {user ? (
-            <>
-              <Link to="post">
-                <button className="buttonPOST">Create Post</button>
-              </Link>
-            </>
-          ) : null}
+    <section className="bodyHome">
+      <div className="nav-container">
+        {user && (
+          <Link to="post">
+            <button className="buttonPOST">Create Post</button>
+          </Link>
+        )}
 
-          <div className="navbar">
-            <div className="username">
-              {user ? (
-                <>
-                  <span>{user.username}</span>
-
-                  <Link to="profile">
-                    <img
-                      src={user.profileImage
-                        ? `http://localhost:3000/uploads/${user.profileImage}`
-                        : profileImage}
-                      alt="Profile"
-                      className="user-profile-image"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </Link>
-
-                  <button className="button2" onClick={handleLogout}>Logout</button>
-                </>
-              ) : (
-                <>
-                  <span>Guest</span>
-                  <img src={profileImage} alt="Guest Profile" className="user-profile-image" />
-
-                  <Link to="/auth/login">
-                    <button className="button2">Login Here</button>
-                  </Link>
-                </>
-              )}
-            </div>
+        <div className="navbar">
+          <div className="username">
+            {user ? (
+              <>
+                <span>{user.username}</span>
+                <Link to="profile">
+                  <img
+                    src={user.profileImage
+                      ? `http://localhost:3000/uploads/${user.profileImage}`
+                      : profileImage}
+                    alt="Profile"
+                    className="user-profile-image"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Link>
+                <button className="button2" onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <span>Guest</span>
+                <img src={profileImage} alt="Guest Profile" className="user-profile-image" />
+                <Link to="/auth/login">
+                  <button className="button2">Login Here</button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
+      </div>
 
-        <div className="container">
-          <aside className="sidebar">
-            <button className="popular-btn">Popular</button>
-            <div className="topics">
-              <h3>Topic:</h3>
-              <ul>
+      <div className="container">
+        <aside className="sidebar">
+          <button className="popular-btn">Popular</button>
+          <div className="topics">
+            <h3>Topic:</h3>
+            <ul>
+              {topiks.map((topik, idx) => (
                 <li
-                  onClick={() => handleTopikClick("Sports")}
-                  className={selectedTopik === "Sports" ? "selected" : ""}
+                  key={idx}
+                  onClick={() => handleTopikClick(topik)}
+                  className={selectedTopik === topik ? "selected" : ""}
                 >
-                  Sports
+                  {topik}
                 </li>
-                <li
-                  onClick={() => handleTopikClick("Game")}
-                  className={selectedTopik === "Game" ? "selected" : ""}
-                >
-                  Game
-                </li>
-                <li
-                  onClick={() => handleTopikClick("Music")}
-                  className={selectedTopik === "Music" ? "selected" : ""}
-                >
-                  Music
-                </li>
-                <li
-                  onClick={() => handleTopikClick("Otomotif")}
-                  className={selectedTopik === "Otomotif" ? "selected" : ""}
-                >
-                  Otomotif
-                </li>
-                <li
-                  onClick={() => handleTopikClick("War")}
-                  className={selectedTopik === "War" ? "selected" : ""}
-                >
-                  War
-                </li>
-                <li
-                  onClick={() => handleTopikClick("Daily Life")}
-                  className={selectedTopik === "Daily Life" ? "selected" : ""}
-                >
-                  Daily Life
-                </li>
-                <li onClick={() => setSelectedTopik(null)} >Show All</li>
-              </ul>
-            </div>
-          </aside>
+              ))}
+              <li onClick={() => setSelectedTopik(null)}>Show All</li>
+            </ul>
+          </div>
+        </aside>
 
-          <main className='posts'>
-            {posts && posts.length > 0 ? (
-              posts
-                .filter(post => !selectedTopik || post.topik === selectedTopik)
-                .map((item, index) => (
-                  <Postdesk
-                    key={item.post_id}
-                    post_id={item.post_id}
-                    title={item.title}
-                    post={item.post}
-                    like={item.like}
-                    topik={item.topik}
-                    onLike={handleLike}
-                  />
-
-                ))
-            ) : (
-              <p>No posts available</p>
-            )}
-          </main>
-
-        </div>
-      </section>
-    </>
+        <main className="posts">
+          {posts.length > 0 ? (
+            posts
+              .filter(p => !selectedTopik || p.topik === selectedTopik)
+              .map(post => (
+                <Postdesk
+                  key={post.post_id}
+                  {...post}
+                  onLike={handleLike}
+                />
+              ))
+          ) : (
+            <p>No posts available</p>
+          )}
+        </main>
+      </div>
+    </section>
   );
 };

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Post } from "../models/Post";
+import { User } from "../models/User"; // Ensure User model is imported
 import { v4 } from "uuid";
 import bcrypt from "bcryptjs"; // This doesn't seem to be needed in this route, unless you're encrypting data
 
@@ -53,14 +54,29 @@ export const post = async (req: Request, res: Response): Promise<void> => {
 
 export const getAllPost = async (req: Request, res: Response): Promise<void> => {
   try {
-    const posts = await Post.findAll(); // Assuming you have a method to fetch all posts
+    const posts = await Post.findAll();
 
-    if (!posts) {
+    if (!posts || posts.length === 0) {
       res.status(404).json({ message: "No posts found" });
       return;
     }
 
-    res.status(200).json(posts);
+    // Ambil semua user yang terkait
+    const userIds = [...new Set(posts.map((p: any) => p.user_Id))];
+    const users = await User.findAll({
+      where: { user_id: userIds }
+    });
+
+    // Buat map untuk user_id → username
+    const userMap = new Map(users.map((u: any) => [u.user_id, u.username]));
+
+    // Gabungkan username ke setiap post
+    const result = posts.map((post: any) => ({
+      ...post.toJSON(),
+      username: userMap.get(post.user_Id) || "Unknown User",
+    }));
+
+    res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Internal server error" });

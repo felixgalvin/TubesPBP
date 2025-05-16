@@ -10,15 +10,17 @@ import{Post} from "../models/Post";
 import{Comment} from "../models/Comment";
 import { Dialect } from "sequelize"; // Add this import if not already present
 
+
 const sequelize = new Sequelize({
   ...config.development,
   dialect: "postgres",
-  models: [User, Reply, Post] // Explicitly cast dialect to Dialect type
+  models: [User, Reply, Post, Comment] // Explicitly cast dialect to Dialect type
 });
 
 sequelize.addModels([User]);
 sequelize.addModels([Reply]);
 sequelize.addModels([Post]);
+sequelize.addModels([Comment]);
 
 const app = express();
 const PORT = 3000;
