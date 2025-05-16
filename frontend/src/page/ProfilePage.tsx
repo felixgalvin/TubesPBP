@@ -9,12 +9,13 @@ const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   useEffect(() => {
-    // Ambil ID pengguna yang login dari localStorage
-    const userId = localStorage.getItem('userId');  // ID pengguna yang login
+    const userData = localStorage.getItem('user');
 
-    if (userId) {
-      // Ambil data pengguna dari API menggunakan ID pengguna
-      fetch(`http://localhost:5000/api/user-profile/${userId}`)
+    if (userData) {
+      const user = JSON.parse(userData);
+      const userId = user.id;
+
+      fetch(`http://localhost:3000/api/user-profile/${userId}`)
         .then((response) => response.json())
         .then((data) => {
           setUsername(data.username);
