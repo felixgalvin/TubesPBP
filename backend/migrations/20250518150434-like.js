@@ -1,10 +1,10 @@
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
-export default{
+export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("reply", {
-      reply_Id: {
+    await queryInterface.createTable("likes", {
+      like_Id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
@@ -13,47 +13,42 @@ export default{
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: "user", // pastikan sesuai nama tabel user
+          model: "user",
           key: "user_Id",
         },
         onDelete: "CASCADE",
       },
       post_Id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
-          model: "post", // pastikan sesuai nama tabel post
+          model: "post",
           key: "post_Id",
         },
         onDelete: "CASCADE",
       },
       comment_Id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
-          model: "comment", // pastikan sesuai nama tabel comment
+          model: "comment",
           key: "comment_Id",
         },
         onDelete: "CASCADE",
       },
-      commentReply: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      likeReply: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
+      reply_Id: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: "reply",
+          key: "reply_Id",
+        },
+        onDelete: "CASCADE",
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("reply");
+    await queryInterface.dropTable("likes");
   },
 };

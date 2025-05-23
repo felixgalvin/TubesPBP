@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { User } from "../models/User"; 
 import { v4 } from "uuid";
 import bcrypt from "bcryptjs";
 
-export const signup = async (req: Request, res: Response): Promise<void> => {
+export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, password, username, gender} = req.body;
   const profileImage = req.file ? req.file.filename : null;
   
@@ -14,20 +14,14 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       },
     });
     
-    if (existingUser) {
-      res.status(400).json({ message: "Username already taken" })
-      return
-    }
+    if (existingUser) throw new Error("Username already taken");
     
     const existingEmail = await User.findOne({ where: { email } });
-    if (existingEmail) {
-      res.status(400).json({ message: "Email already registered" })
-      return 
-    }
+    if (existingEmail) throw new Error("Email already registered");
     
     const hashedPassword = await bcrypt.hash(password, 10);
     await User.create({
-      user_id: v4(),
+      user_Id: v4(),
       email,
       password: hashedPassword,
       username,
@@ -38,8 +32,6 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     res.status(201).json({ message: "User created successfully" })
     return 
   } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Internal server error" })
-    return 
+    next(error);
   }
 };

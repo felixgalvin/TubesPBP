@@ -12,7 +12,7 @@ const PostPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -22,7 +22,7 @@ const PostPage: React.FC = () => {
 
     // No need for FormData here. Just use a plain object to send JSON
     const formPayload = {
-      user_id: formData.user_Id,
+      user_Id: formData.user_Id,
       title: formData.title,
       post: formData.post,  // Renaming 'postContent' back to 'post'
       topik: formData.topik,
@@ -61,40 +61,48 @@ const PostPage: React.FC = () => {
       alert("No token found. Please log in first.");
     }
   };
-
   return (
-    <section className="body-post">
-      <div className="form-container">
-        <h2>CREATE POST</h2>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            name="title"
-            id="title"
-            required
-            onChange={handleChange}
-          />
-
-          <label htmlFor="postContent">Content</label>
-          <input
-            type="text"
-            name="post"
-            id="postContent"
-            required
-            onChange={handleChange}
-          />
-
-          <label htmlFor="topik">Genre</label>
-          <div className="gender-options">
-            <select
-              name="topik"
-              id="topik"
-              onChange={handleChange}
+    <section className="post-page theme-page">
+      <div className="post-form-container theme-form">
+        <h2 className="post-title theme-text-center">Create New Post</h2>
+        <form onSubmit={handleSubmit} className="post-form">
+          <div className="post-input-group theme-input-group">
+            <label htmlFor="title" className="post-label theme-label">Title</label>
+            <input
+              type="text"
+              name="title"
+              id="title"
               required
-              value={formData.topik} // make it controlled
+              onChange={handleChange}
+              className="post-input theme-input"
+              placeholder="Enter a catchy title"
+            />
+          </div>
+
+          <div className="post-input-group theme-input-group">
+            <label htmlFor="postContent" className="post-label theme-label">Content</label>
+            <textarea
+              name="post"
+              id="postContent"
+              required
+              onChange={handleChange}
+              className="post-textarea theme-input"
+              placeholder="Share your thoughts here..."
+              rows={5}
+            ></textarea>
+          </div>
+
+          <div className="post-input-group1 theme-input-group">
+            <label htmlFor="topik" className="post-label theme-label">Topic</label>
+            <select 
+              name="topik" 
+              id="topik" 
+              required 
+              onChange={handleChange} 
+              className="post-select theme-input"
+              value={formData.topik}
             >
-              <option value="" disabled hidden>-- Select Genre --</option>
+              <option value="" disabled hidden>-- Select Topic --</option>
               <option value="Sports">Sports</option>
               <option value="Game">Game</option>
               <option value="Music">Music</option>
@@ -104,11 +112,16 @@ const PostPage: React.FC = () => {
             </select>
           </div>
 
-
-          <button type="submit" className="button-primary">Post</button>
-          <Link to="/user">
-            <button type="button" className="button-cancel">Cancel</button>
-          </Link>
+          <div className="post-buttons">
+            <button type="submit" className="post-submit-btn theme-btn theme-btn-success">
+              Create Post
+            </button>
+            <Link to="/user" className="post-cancel-link">
+              <button type="button" className="post-cancel-btn theme-btn theme-btn-secondary">
+                Cancel
+              </button>
+            </Link>
+          </div>
         </form>
       </div>
     </section>

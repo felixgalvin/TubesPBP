@@ -4,7 +4,7 @@
 export default{
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("post", {
-      post_id: {
+      post_Id: {
         type: Sequelize.UUID,
         primaryKey: true,
         allowNull: false,
@@ -14,7 +14,7 @@ export default{
         allowNull: false,
         references: {
           model: "user", 
-          key: "user_id",
+          key: "user_Id",
         },
         onDelete: "CASCADE",
       },
@@ -26,7 +26,7 @@ export default{
         type: Sequelize.STRING,
         allowNull: false,
       },
-      like: {
+      likePost: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue:0,
@@ -34,6 +34,11 @@ export default{
       topik: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
     });
   },

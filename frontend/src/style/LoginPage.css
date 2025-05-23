@@ -1,91 +1,75 @@
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Uses the MainTheme.css as a base */
 
-
-.bodyLogin {
-    font-family: Arial, sans-serif;
-    background-color: #cfd2d2;
+.login-page {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: var(--background-color);
 }
-
 
 .login-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    height: 320px;
+    width: 360px;
+    padding: var(--spacing-xl);
+    transition: transform var(--transition-normal);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
+.login-container:hover {
+    transform: translateY(-5px);
 }
 
-.input-group {
-    margin-bottom: 15px;
+.login-title {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-xlarge);
 }
 
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
+.login-input-group {
+    margin-bottom: var(--spacing-md);
+    width: 92.5%;
 }
 
-.input-group input {
+.login-input {
+    width: 100%;
+    padding: 12px;
+}
+
+.login-button {
+    width: 100%;
+    margin-bottom: var(--spacing-lg);
+    padding: 12px;
+}
+
+.login-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.login-register-link {
+    width: 48%;
+}
+
+.login-register-btn,
+.login-guest-btn {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
-.button {
-    margin: 0;
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.button5 {
-    width: 40%;
-    padding: 10px;
-    background-color: #0984e3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 5%;
-}
-
-.button6{
-    width: 40%;
-    padding: 10px;
-    background-color: #0984e3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 10%;
-}
-
-
-.button:hover {
-    background-color: #5b86a9;
+@media (max-width: 480px) {
+    .login-container {
+        width: 90%;
+    }
+    
+    .login-actions {
+        flex-direction: column;
+    }
+    
+    .login-register-link,
+    .login-guest-btn {
+        width: 100%;
+        margin: var(--spacing-xs) 0;
+    }
 }

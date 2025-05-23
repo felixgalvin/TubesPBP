@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../api/Api';
 import "../style/Register.css";
 
 const RegisterForm: React.FC = () => {
@@ -23,7 +24,7 @@ const RegisterForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = new FormData();
     
@@ -35,62 +36,104 @@ const RegisterForm: React.FC = () => {
       form.append("profileImage", formData.profileImage);
     }
 
-    fetch("/api/register", {
-      method: "POST",
-      body: form,
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error.message || "Register failed");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        alert("Registration successful");
-        navigate("/auth/login"); // Redirect to login page after successful registration
-      })
-      .catch((err) => {
-        console.error("Error detail:", err);
-        alert("Registration failed: " + err.message);
-      });
+    try {
+      await api.postFormData<null>('/register', form, false);
+      alert("Registration successful");
+      navigate("/auth/login"); // Redirect to login page after successful registration
+    } catch (err: any) {
+      console.error("Error detail:", err);
+      alert("Registration failed: " + err.message);
+    }
   };
-
   return (
-    <section className="bodyRegis">
+    <section className="register-page theme-page">
+      <div className="register-container theme-form">
+        <h2 className="register-title theme-text-center">Create Account</h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="register-form">
+          <div className="register-input-group theme-input-group">
+            <label htmlFor="email" className="register-label theme-label">Email</label>
+            <input 
+              type="email" 
+              name="email" 
+              id="email" 
+              className="register-input theme-input" 
+              required 
+              onChange={handleChange} 
+            />
+          </div>
 
-    <div className="form-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" required onChange={handleChange} />
+          <div className="register-input-group theme-input-group">
+            <label htmlFor="password" className="register-label theme-label">Password</label>
+            <input 
+              type="password" 
+              name="password" 
+              id="password" 
+              className="register-input theme-input" 
+              required 
+              onChange={handleChange} 
+            />
+          </div>
 
-          <label htmlFor="password">Password</label>
-          <input type="password" name="password" id="password" required onChange={handleChange} />
+          <div className="register-input-group theme-input-group">
+            <label htmlFor="username" className="register-label theme-label">Username</label>
+            <input 
+              type="text" 
+              name="username" 
+              id="username" 
+              className="register-input theme-input" 
+              required 
+              onChange={handleChange} 
+            />
+          </div>
 
-          <label htmlFor="username">Username</label>
-          <input type="text" name="username" id="username" required onChange={handleChange} />
+          <div className="register-input-group theme-input-group">
+            <label className="register-label theme-label">Gender</label>
+            <div className="register-gender-options">
+              <label className="register-radio-label">
+                <input 
+                  type="radio" 
+                  name="gender" 
+                  value="MALE" 
+                  required 
+                  onChange={handleChange} 
+                  className="register-radio" 
+                /> 
+                <span>Male</span>
+              </label>
+              <label className="register-radio-label">
+                <input 
+                  type="radio" 
+                  name="gender" 
+                  value="FEMALE" 
+                  required 
+                  onChange={handleChange} 
+                  className="register-radio" 
+                /> 
+                <span>Female</span>
+              </label>
+            </div>
+          </div>
 
-        <label>Gender</label>
-        <div className="gender-options">
-          <label>
-            <input type="radio" name="gender" value="MALE" required onChange={handleChange} /> Male
-          </label>
-          <label>
-            <input type="radio" name="gender" value="FEMALE" required onChange={handleChange} /> Female
-          </label>
-        </div>
+          <div className="register-input-group theme-input-group">
+            <label htmlFor="profileImage" className="register-label theme-label">Profile Image</label>
+            <input 
+              type="file" 
+              name="profileImage" 
+              id="profileImage" 
+              accept="image/*" 
+              onChange={handleChange} 
+              className="register-file-input" 
+            />
+          </div>
 
-        <label htmlFor="profileImage">Profile Image</label>
-        <input type="file" name="profileImage" id="profileImage" accept="image/*" onChange={handleChange} />
-
-        <button type="submit" className="button1">Register</button>
-        <Link to="/auth/login">
-          <button className="button3">Log In Page</button>
-        </Link>
-      </form>
-
-    </div>
+          <div className="register-buttons">
+            <button type="submit" className="register-submit-btn theme-btn theme-btn-success">Register</button>
+            <Link to="/auth/login" className="register-login-link">
+              <button type="button" className="register-login-btn theme-btn theme-btn-secondary">Back to Login</button>
+            </Link>
+          </div>
+        </form>
+      </div>
     </section>
   );
 };

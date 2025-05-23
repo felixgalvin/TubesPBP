@@ -1,26 +1,24 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import userRoutes from "./AuthRoutes"; // GANTI sesuai nama file router kamu
 import { Sequelize } from "sequelize-typescript";
 import config from "../config/config.json";
-import{User} from "../models/User";
-import{Reply} from "../models/Reply";
-import{Post} from "../models/Post";
-import{Comment} from "../models/Comment";
-import { Dialect } from "sequelize"; // Add this import if not already present
-
+import { User } from "../models/User";
+import { Reply } from "../models/Reply";
+import { Post } from "../models/Post";
+import { Comment } from "../models/Comment";
+import { Like } from "../models/Like";
+import publicRoutes from "./AuthPublicRoutes";
+import privateRoutes from "./AuthPrivateRoutes";
+import { errorHandlerMiddleware } from "../middlewares/ErrorHandlerMiddleware";
 
 const sequelize = new Sequelize({
   ...config.development,
   dialect: "postgres",
-  models: [User, Reply, Post, Comment] // Explicitly cast dialect to Dialect type
+  models: [User, Reply, Post, Comment, Like],
 });
 
-sequelize.addModels([User]);
-sequelize.addModels([Reply]);
-sequelize.addModels([Post]);
-sequelize.addModels([Comment]);
+sequelize.addModels([User, Reply, Post, Comment, Like]);
 
 const app = express();
 const PORT = 3000;
@@ -31,83 +29,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
-// REGISTER ROUTES
-app.use("/api", userRoutes); // INI WAJIB AGAR /register bisa diakses
+// Public routes (no auth required)
+app.use("/api", publicRoutes);
+// Private routes (with auth middleware inside the router)
+app.use("/api", privateRoutes);
 
-
-async function getUserById(user_id: string) {
-  await sequelize.sync();
-  
-  const user = await User.findAll({
-      where: {user_id}
-  })
-  return user;
-}
-
-app.get("/users/:id", async (req, res, next) => {
-  try {
-    const user = await getUserById(req.params.id);
-
-    if (!user) {
-      return next(new Error("ToDoNotFound"));
-    }
-
-    res.status(200).json(user);
-    return;
-  } catch (err) {
-    next(err);
-  }
-});
-
-app.get("/users", async (req, res, next) => {
-  try {
-    const users = await User.findAll();
-
-    if (!users) {
-      return next(new Error("UserNotFound"));
-    }
-
-    res.status(200).json(users);
-    return;
-
-  } catch (err) {
-    next(err);
-  }
-});
-
-app.get("/users", async (req, res, next) => {
-  try {
-    const users = await User.findAll();
-
-    if (!users) {
-      return next(new Error("UserNotFound"));
-    }
-
-    res.status(200).json(users);
-    return;
-
-  } catch (err) {
-    next(err);
-  }
-});
-
-app.post("/users/post", async (req, res, next) => {
-  try {
-    const { user_Id, title, post, like, topik } = req.body;
-    const newPost = await Post.create({
-      user_Id,  
-      title,
-      post,
-      like,
-      topik
-    });
-
-    res.status(201).json(newPost);
-  } catch (err) {
-    next(err);
-  }
-});
-
+// Error handler (should be last)
+app.use(errorHandlerMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

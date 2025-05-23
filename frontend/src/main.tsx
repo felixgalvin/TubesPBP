@@ -1,13 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// import './index.css'
 import App from './App'
-import { Router } from './config/route'
-import { HomePage } from './page/HomePage'
-import { LoginPage } from './page/LoginPage'
+import { Router }  from './routes/Route'
+// import { HomePage } from './page/HomePage'
+// import { LoginPage } from './page/LoginPage'
+import ReactDOM from "react-dom/client";
+import React from "react";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  // <StrictMode>
+      <App />
+  //</StrictMode>);
+
+);

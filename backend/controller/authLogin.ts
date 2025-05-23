@@ -3,8 +3,7 @@ import { Request, Response } from "express";
 import { User } from "../models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET = "your_jwt_secret_key"; // Sebaiknya pakai .env
+import { appConfig } from "../config/app";
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
@@ -22,8 +21,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = jwt.sign({ userId: user.user_id }, JWT_SECRET, {
-      expiresIn: "1h",
+    // Gunakan appConfig.jwtExpiry untuk menentukan waktu expired
+    const expiresIn = Math.floor(appConfig.jwtExpiry / 1000); // detik
+    const token = jwt.sign({ userId: user.user_Id }, appConfig.jwtSecret, {
+      expiresIn,
     });
 
     res.status(200).json({ token });

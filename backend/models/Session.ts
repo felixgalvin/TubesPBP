@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 import { v4 } from "uuid";
 
 @Table({
-    tableName: "session", timestamps: false
+  tableName: "session", timestamps: false
 })
 
 export class Session extends Model {

@@ -1,84 +1,220 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { Post } from "../models/Post";
-import { User } from "../models/User"; // Ensure User model is imported
+import { User } from "../models/User";
 import { v4 } from "uuid";
-import bcrypt from "bcryptjs"; // This doesn't seem to be needed in this route, unless you're encrypting data
+import { AuthRequest } from "../middlewares/AuthorizationMiddleware";
 
-export const post = async (req: Request, res: Response): Promise<void> => {
-  const { title, post, topik, like, user_id } = req.body;
-
-  // Check if all required fields are provided
-  if (!title) {
-    res.status(400).json({ message: "Title is required" });
-    return;
-  }
-
-  if (!post) {
-    res.status(400).json({ message: "Post content is required" });
-    return;
-  }
-
-  if (!topik) {
-    res.status(400).json({ message: "Topik is required" });
-    return;
-  }
-
-  if (like === undefined) {
-    res.status(400).json({ message: "Like is required" });
-    return;
-  }
-
-  if (!user_id) {
-    res.status(400).json({ message: "User ID is required" });
-    return;
-  }
-
-
+export const post = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+  const userId = req.userId;
   try {
-    // Create a new post in the database
+    if (!userId) throw new Error("Unauthorized");
+    const { title, post, topik } = req.body;
+    if (!title) throw new Error("Title is required");
+    if (!post) throw new Error("Post content is required");
+    if (!topik) throw new Error("Topik is required");
     await Post.create({
-      post_id: v4(),
-      user_Id: user_id,  // Ensure 'user_Id' is correctly named
+      post_Id: v4(),
+      user_Id: userId,
       title,
       post,
-      like: 0,
+      likePost: 0,
       topik,
     });
-
     res.status(201).json({ message: "Post created successfully" });
   } catch (error) {
-    console.error("Error creating post:", error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getAllPost = async (req: Request, res: Response): Promise<void> => {
+export const getAllPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const posts = await Post.findAll();
+    const limit = parseInt((req.query.limit as string) || '10', 10);
+    const offset = parseInt((req.query.offset as string) || '0', 10);
+    const { count, rows } = await Post.findAndCountAll({ limit, offset, order: [['createdAt', 'DESC']] });
 
-    if (!posts || posts.length === 0) {
-      res.status(404).json({ message: "No posts found" });
+    if (!rows || rows.length === 0) {
+      res.status(200).json({ data: [], total: count || 0 });
       return;
     }
 
-    // Ambil semua user yang terkait
-    const userIds = [...new Set(posts.map((p: any) => p.user_Id))];
+    const userIds = [...new Set(rows.map((p: any) => p.user_Id))];
+
     const users = await User.findAll({
-      where: { user_id: userIds }
+      where: { user_Id: userIds },
+      attributes: ["user_Id", "username", "profileImage"],
     });
 
-    // Buat map untuk user_id → username
-    const userMap = new Map(users.map((u: any) => [u.user_id, u.username]));
+    if (!users || users.length === 0) {
+      throw new Error("No users found");
+    }
 
-    // Gabungkan username ke setiap post
-    const result = posts.map((post: any) => ({
-      ...post.toJSON(),
-      username: userMap.get(post.user_Id) || "Unknown User",
-    }));
+    const userMap = new Map(
+      users.map((u: any) => [
+        u.user_Id,
+        { username: u.username, profileImage: u.profileImage },
+      ])
+    );
 
-    res.status(200).json(result);
+    if (!userMap) {
+            console.log("No usersMap found");
+
+    }
+
+    const result = rows.map((post: any) => {
+      const user = userMap.get(post.user_Id) || {
+        username: "Unknown User",
+        profileImage:  null,
+      };
+
+      return {
+        ...post.toJSON(),
+        username: user.username,
+        profileImage: user.profileImage || null,
+      };
+    });
+
+    res.status(200).json({ data: result, total: count });
   } catch (error) {
-    console.error("Error fetching posts:", error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
+
+export const getUserPosts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const userId = req.params.userid;
+  try {
+    const posts = await Post.findAll({ where: { user_Id: userId } });
+    res.status(200).json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUserPost = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+  const authUserId = req.userId;
+  try {
+    if (!authUserId) throw new Error('Unauthorized');
+    const postId = req.params.postId;
+    const post = await Post.findByPk(postId);
+    if (!post) throw new Error('Post not found');
+    if (post.user_Id !== authUserId) throw new Error('Forbidden');
+    await post.destroy();
+    res.status(200).json({ message: 'Post deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPostsByTopic = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '10', 10);
+    const offset = parseInt((req.query.offset as string) || '0', 10);
+    const topik = req.query.topik as string;
+    if (!topik) throw new Error('Topik is required');
+    const { count, rows } = await Post.findAndCountAll({
+      where: { topik },
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']]
+    });
+    if (!rows || rows.length === 0) throw new Error('No posts found');
+    const userIds = [...new Set(rows.map((p: any) => p.user_Id))];
+    const users = await User.findAll({
+      where: { user_Id: userIds },
+      attributes: ["user_Id", "username", "profileImage"],
+    });
+    const userMap = new Map(
+      users.map((u: any) => [u.user_Id, { username: u.username, profileImage: u.profileImage }])
+    );
+    const result = rows.map((post: any) => {
+      const user = userMap.get(post.user_Id) || { username: "Unknown User", profileImage: null };
+      return { ...post.toJSON(), username: user.username, profileImage: user.profileImage || null };
+    });
+    res.status(200).json({ data: result, total: count });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPopularPosts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '10', 10);
+    const offset = parseInt((req.query.offset as string) || '0', 10);
+    const { count, rows } = await Post.findAndCountAll({
+      limit,
+      offset,
+      order: [
+        ['likePost', 'DESC'],
+        ['createdAt', 'DESC']
+      ]
+    });
+    if (!rows || rows.length === 0) {
+      res.status(200).json({ data: [], total: count || 0 });
+      return;
+    }
+    const userIds = [...new Set(rows.map((p: any) => p.user_Id))];
+    const users = await User.findAll({
+      where: { user_Id: userIds },
+      attributes: ["user_Id", "username", "profileImage"],
+    });
+    const userMap = new Map(
+      users.map((u: any) => [u.user_Id, { username: u.username, profileImage: u.profileImage }])
+    );
+    const result = rows.map((post: any) => {
+      const user = userMap.get(post.user_Id) || { username: "Unknown User", profileImage: null };
+      return { ...post.toJSON(), username: user.username, profileImage: user.profileImage || null };
+    });
+    res.status(200).json({ data: result, total: count });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export const getUnlikedPosts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//   try {
+//     const limit = parseInt((req.query.limit as string) || '10', 10);
+//     const offset = parseInt((req.query.offset as string) || '0', 10);
+//     const { count, rows } = await Post.findAndCountAll({
+//       where: { likePost: 0 },
+//       limit,
+//       offset,
+//       order: [['createdAt', 'DESC']]
+//     });
+//     if (!rows || rows.length === 0) throw new Error('No posts found');
+//     const userIds = [...new Set(rows.map((p: any) => p.user_Id))];
+//     const users = await User.findAll({
+//       where: { user_Id: userIds },
+//       attributes: ["user_Id", "username", "profileImage"],
+//     });
+//     const userMap = new Map(
+//       users.map((u: any) => [u.user_Id, { username: u.username, profileImage: u.profileImage }])
+//     );
+//     const result = rows.map((post: any) => {
+//       const user = userMap.get(post.user_Id) || { username: "Unknown User", profileImage: null };
+//       return { ...post.toJSON(), username: user.username, profileImage: user.profileImage || null };
+//     });
+//     res.status(200).json({ data: result, total: count });
+//   } catch (error) {
+//     next(error);
+//   }
+// };

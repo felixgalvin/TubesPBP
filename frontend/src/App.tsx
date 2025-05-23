@@ -1,4 +1,5 @@
-import { Router } from './config/route';
+import { Router }  from './routes/Route';
+import './style/MainTheme.css'; // Import the main theme CSS
 
 function App() {
   return (
@@ -7,9 +8,3 @@ function App() {
 }
 
 export default App;
-
-// <Router>
-    //   <Routes>
-        {/* <Route path="/" element={<LoginPage />} />  */}
-      /* </Routes>
-    </Router> */

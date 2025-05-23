@@ -1,61 +1,242 @@
-/* Styling utama untuk container profil */
+/* Profile Page specific styles - uses MainTheme.css variables */
+
+.profile-page {
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: var(--spacing-lg);
+  font-family: var(--font-family);
+}
+
 .profile-container {
-    display: flex;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.profile-title {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-xxlarge);
+  font-weight: 600;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-light);
+  margin: 0 auto var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  display: block;
+}
+
+.profile-content {
+  width: 100%;
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-card {
+  background-color: var(--surface-color);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.profile-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.profile-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.profile-section-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-large);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.profile-field {
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.profile-field:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.profile-field-label {
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-field-value {
+  color: var(--text-primary);
+  font-size: var(--font-size-medium);
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+}
+
+.profile-edit-form {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px dashed var(--border-color);
+}
+
+.profile-form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.profile-edit-btn {
+  margin-top: var(--spacing-sm);
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-small);
+}
+
+.profile-error {
+  color: var(--error-color);
+  padding: var(--spacing-md);
+  background-color: rgba(229, 57, 53, 0.1);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.profile-empty-message {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--spacing-md) 0;
+}
+
+.profile-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.profile-back-btn {
+  width: 100%;
+}
+
+/* My Posts section */
+.profile-posts {
+  flex: 2;
+}
+
+.profile-post-item {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  position: relative;
+  border: 1px solid var(--border-color);
+}
+
+.profile-post-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.profile-post-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding-bottom: var(--spacing-md);
+}
+
+.profile-post-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.profile-post-username {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.profile-post-title {
+  font-size: var(--font-size-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+}
+
+.profile-post-content {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.5;
+  max-height: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-post-content:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 20px;
+  background: linear-gradient(transparent, var(--surface-color));
+}
+
+.profile-post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+}
+
+.profile-post-time {
+  font-style: italic;
+}
+
+.profile-post-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-content {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
   }
   
-  /* Judul halaman profil */
-  .profile-container h1 {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 2rem;
+  .profile-card {
+    padding: var(--spacing-md);
   }
   
-  /* Gambar profil */
-  .profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #ddd;
-    margin-bottom: 20px;
+  .profile-back-btn {
+    padding: var(--spacing-sm);
   }
-  
-  /* Section informasi pengguna */
-  .profile-details {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  .profile-details h2 {
-    color: #333;
-    margin: 10px 0;
-  }
-  
-  .profile-details p {
-    color: #666;
-    margin: 8px 0;
-    font-size: 1rem;
-  }
-  
-  /* Link ke halaman edit profile */
-  .edit-profile-link {
-    margin-top: 20px;
-    text-decoration: none;
-    color: #0066cc;
-    font-weight: bold;
-  }
-  
-  .edit-profile-link:hover {
-    color: #004d99;
-  }  
+}

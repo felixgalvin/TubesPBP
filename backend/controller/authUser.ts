@@ -1,80 +1,70 @@
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 import { User } from "../models/User";
-import { c } from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
-import { create } from "domain";
-import { CreatedAt } from "sequelize-typescript";
+import { Like } from "../models/Like";
+import bcrypt from "bcryptjs";
+import { AuthRequest } from "../middlewares/AuthorizationMiddleware";
 
-const JWT_SECRET = "your_jwt_secret_key"; // Sebaiknya gunakan .env untuk menyimpan secret
-
-export const getUserData = async (req: Request, res: Response): Promise<void> => {
-  const token = req.headers.authorization?.split(" ")[1]; // Mengambil token dari header Authorization
-
-  if (!token) {
-    res.status(401).json({ message: "Token is required" });
-    return
-  }
-
+export const getUserData = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+  const userId = req.userId;
   try {
-    // Verifikasi token
-    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
-
-    // Mengambil user berdasarkan user_id yang ada di dalam token
-    const user = await User.findOne({ where: { user_id: decoded.userId } });
-
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return
-    }
-
-    // Kirimkan data pengguna yang berhasil ditemukan
-    res.status(200).json({
-      message: "User data fetched successfully", // Menambahkan pesan sukses
-      data: {
-        user_id: user.user_id,
-        email: user.email,
-        username: user.username,
-        gender: user.gender,
-        profileImage: user.profileImage,
-        CreatedAt: user.createdAt,
-      }
-    });
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    // Menangani error jika token tidak valid atau ada kesalahan lainnya
-    if (error instanceof jwt.JsonWebTokenError) {
-      res.status(401).json({ message: "Invalid token" });
-      return
-    }
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const getUserById = async (req: Request, res: Response): Promise<void> => {
-  const userId = req.params.id; // Mengambil user_id dari parameter URL
-
-  try {
-    const user = await User.findOne({ where: { user_id: userId } });
-
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return
-    }
-
+    if (!userId) throw new Error("Unauthorized");
+    const user = await User.findByPk(userId);
+    const likes = await Like.findAll({ where: { user_Id: userId } });
+    const likedPosts = likes.map((like) => like.post_Id);
     res.status(200).json({
       message: "User data fetched",
       data: {
-        user_id: user.user_id,
+        ...user?.toJSON(),
+        likedPosts,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findOne({ where: { user_Id: userId } });
+    if (!user) throw new Error("User not found");
+    res.status(200).json({
+      message: "User data fetched",
+      data: {
+        user_Id: user.user_Id,
         email: user.email,
         username: user.username,
         gender: user.gender,
         profileImage: user.profileImage,
         createdAt: user.createdAt,
-      }
+      },
     });
   } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).json({ message: "Internal server error" });
-    return
+    next(error);
   }
-}
+};
+
+export const updateUserProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const userId = req.params.id;
+  const { currentPassword } = req.body;
+  try {
+    if (!currentPassword) throw new Error('Current password required');
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error('User not found');
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) throw new Error('Incorrect password');
+    const updates: any = {};
+    if (req.body.username) updates.username = req.body.username;
+    if (req.body.email) updates.email = req.body.email;
+    if (req.body.gender) updates.gender = req.body.gender;
+    if (req.body.newPassword) {
+      const newHash = await bcrypt.hash(req.body.newPassword, 10);
+      updates.password = newHash;
+    }
+    if (req.file && req.file.filename) updates.profileImage = req.file.filename;
+    await user.update(updates);
+    res.status(200).json({ message: 'Profile updated', data: updates });
+  } catch (error) {
+    next(error);
+  }
+};

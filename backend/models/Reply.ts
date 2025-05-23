@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, PrimaryKey, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, DataType, PrimaryKey, ForeignKey } from "sequelize-typescript";
 import { User } from "./User";
 import { Post } from "./Post";
 import { Comment } from "./Comment";
@@ -10,7 +10,7 @@ import { v4 } from "uuid";
 
 export class Reply extends Model {
   @Column({ primaryKey: true, type: DataType.UUID })
-  declare reply_id: string;
+  declare reply_Id: string;
 
   @ForeignKey(() => User)
   @Column({
@@ -45,12 +45,10 @@ export class Reply extends Model {
   })
   declare likeReply: number;
 
-  @BelongsTo(() => User)
-  declare user: User;
-
-  @BelongsTo(() => Post)
-  declare post: Post;
-
-  @BelongsTo(() => Comment)
-  declare comment: Comment;
+  @Column({
+        type: DataType.DATE,
+        allowNull: false,
+        defaultValue: DataType.NOW
+    })
+    declare createdAt: Date;
 }

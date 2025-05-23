@@ -1,113 +1,128 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+/* Post Page specific styles - uses MainTheme.css variables */
 
-.body-post {
-  background: #f5f6fa;
+.post-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  padding: 20px;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: var(--spacing-md);
 }
 
-.form-container {
-  background: #ffffff;
-  padding: 40px 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+.post-form-container {
+  max-width: 600px;
   width: 100%;
-  max-width: 420px;
-  transition: transform 0.3s ease-in-out;
+  padding: var(--spacing-xl);
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
-.form-container:hover {
+.post-form-container:hover {
   transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
 }
 
-h2 {
+.post-title {
+  color: var(--primary-color);
+  font-size: var(--font-size-xlarge);
+  margin-bottom: var(--spacing-lg);
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #2f3640;
 }
 
-.form-container label {
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.post-input-group {
+  margin-bottom: var(--spacing-md);
+  width: 92.5%;
+}
+
+.post-input-group1{
+  width:100%;
+}
+
+
+.post-label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-xs);
   font-weight: 600;
-  color: #2f3640;
+  color: var(--text-primary);
 }
 
-.form-container input[type="text"],
-.form-container input[type="email"],
-.form-container input[type="password"],
-.form-container input[type="file"],
-.form-container select {
+.post-input,
+.post-select,
+.post-textarea {
   width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 18px;
-  border-radius: 8px;
-  border: 1px solid #dcdde1;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  font-size: var(--font-size-medium);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+  background-color: var(--surface-color);
 }
 
-.form-container input[type="text"]:focus,
-.form-container input[type="email"]:focus,
-.form-container input[type="password"]:focus,
-.form-container select:focus {
-  border-color: #0984e3;
+.post-input:focus,
+.post-select:focus,
+.post-textarea:focus {
   outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
 }
 
-.gender-options {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 18px;
+.post-textarea {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.5;
 }
 
-.gender-options label {
-  font-weight: normal;
-  display: flex;
-  align-items: center;
-  color: #555;
-}
-
-.button-primary {
-  margin: 0;
-  margin-left: 30px;
-  width: 40%;
-  background-color: #0984e3;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
+.post-select {
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  appearance: none;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 30px;
+}
+
+.post-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.post-submit-btn,
+.post-cancel-btn {
+  width: 48%;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
   text-align: center;
 }
 
-.button-primary:hover {
-  background-color: #74b9ff;
-  transform: translateY(-2px);
+.post-cancel-link {
+  width: 48%;
+  text-decoration: none;
 }
 
-.button-primary:active {
-  transform: translateY(0);
-}
-
-.button-cancel {
-  width: 40%;
-  background-color: #ddd;
-  color: #333;
-  margin-left: 4%;
-}
-
-.button-cancel:hover {
-  transform: translateY(-2px);
-  background-color: #ccc;
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .post-form-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .post-buttons {
+    flex-direction: column;
+  }
+  
+  .post-submit-btn,
+  .post-cancel-btn,
+  .post-cancel-link {
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+  }
 }

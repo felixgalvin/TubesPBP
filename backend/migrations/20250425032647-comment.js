@@ -4,7 +4,7 @@
 export default {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("comment", {
-      comment_id: {
+      comment_Id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
@@ -14,7 +14,7 @@ export default {
         allowNull: false,
         references: {
           model: "user", // pastikan nama tabel sesuai
-          key: "user_id",
+          key: "user_Id",
         },
         onDelete: "CASCADE",
       },
@@ -23,7 +23,7 @@ export default {
         allowNull: false,
         references: {
           model: "post", // pastikan nama tabel sesuai
-          key: "post_id",
+          key: "post_Id",
         },
         onDelete: "CASCADE",
       },
@@ -35,6 +35,11 @@ export default {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
     });
   },

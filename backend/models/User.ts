@@ -1,4 +1,4 @@
-import {Table, Column, Model, DataType, PrimaryKey, HasMany  } from "sequelize-typescript";
+import { Table, Column, Model, DataType, PrimaryKey } from "sequelize-typescript";
 import { Post } from "./Post";
 import { Comment } from "./Comment";
 import { Reply } from "./Reply";
@@ -12,10 +12,10 @@ import { Sequelize } from "sequelize-typescript";
 
 export class User extends Model {
     @Column({
-        primaryKey: true, 
-        type:DataType.UUID
+        primaryKey: true,
+        type: DataType.UUID
     })
-    declare user_id: string;
+    declare user_Id: string;
 
     @Column({
         type: DataType.STRING,
@@ -28,13 +28,13 @@ export class User extends Model {
         allowNull: false,
     })
     declare password: string;
-    
+
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
     declare username: string;
-    
+
     @Column({
         type: DataType.ENUM("MALE", "FEMALE"),
         allowNull: false,
@@ -44,8 +44,8 @@ export class User extends Model {
     @Column({
         type: DataType.STRING,
         allowNull: true,
-      })
-      declare profileImage: string;
+    })
+    declare profileImage: string;
 
     @Column({
         type: DataType.DATE,
@@ -53,13 +53,4 @@ export class User extends Model {
         defaultValue: DataType.NOW
     })
     declare createdAt: Date;
-
-    @HasMany(() => Post)
-    declare posts: Post[];
-
-    @HasMany(() => Comment)
-    declare comments: Comment[];
-
-    @HasMany(() => Reply)
-    declare replies: Reply[];
 }
