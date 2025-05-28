@@ -3,7 +3,6 @@ import { Outlet, Link, useNavigate } from 'react-router-dom';
 import profileImage from '../assets/profileImage.jpeg';
 
 const UserLayout = () => {
-
   return (
     <section className="bodyHome">
         <main className="posts">

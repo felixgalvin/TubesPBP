@@ -3,10 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../api/Api';
 import '../style/LoginPage.css';
 
-// Fungsi login ke backend
-const login = (email: string, password: string) =>
-  api.post<{ token: string }>('/login', { email, password }, false);
-
 export const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
@@ -24,7 +20,7 @@ export const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await login(formData.email, formData.password);
+      const data = await api.post<{ token: string }>('/login', { email: formData.email, password: formData.password }, false);
       localStorage.setItem("token", data.token);
       navigate("/user");
       alert("Login berhasil!");
@@ -33,6 +29,7 @@ export const LoginPage = () => {
       alert("Login gagal: " + err.message);
     }
   };
+  
   return (
     <div className="login-page theme-page">
       <div className="login-container theme-form">

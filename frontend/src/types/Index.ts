@@ -1,4 +1,3 @@
-
 export interface User {
   user_Id: string;
   email: string;
@@ -64,4 +63,29 @@ export interface PostdeskReply extends Reply {
 export interface PostdeskComment extends Comment {
   isLiked: boolean;
   onLike: (postId: string) => void;
+}
+
+export interface ReplyItemProps {
+    reply: Reply;
+    commentId: string;
+    likedReplies: string[];
+    onLikeReply: (replyId: string, commentId: string) => void;
+}
+
+export interface CommentItemProps {
+    comment: Comment;
+    likedComments: string[];
+    onLikeComment: (commentId: string) => void;
+    showReplyInput: boolean;
+    onToggleReplyInput: (commentId: string) => void;
+    replyValue: string;
+    onReplyChange: (commentId: string, val: string) => void;
+    onReplySubmit: (commentId: string) => void;
+    replies: Reply[];
+    likedReplies: string[];
+    onLikeReply: (replyId: string, commentId: string) => void;
+    fetchReplies: (commentId: string) => void;
+    totalReplies: number;
+    replyOffset: number;
+    token: string | null;
 }
