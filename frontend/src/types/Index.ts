@@ -70,12 +70,17 @@ export interface ReplyItemProps {
     commentId: string;
     likedReplies: string[];
     onLikeReply: (replyId: string, commentId: string) => void;
+    onDeleteReply?: (replyId: string, commentId: string) => void;
+    onEditReply?: (replyId: string, commentId: string, newContent: string) => void;
+    currentUserId?: string;
 }
 
 export interface CommentItemProps {
     comment: Comment;
     likedComments: string[];
     onLikeComment: (commentId: string) => void;
+    onDeleteComment?: (commentId: string) => void;
+    onEditComment?: (commentId: string, newContent: string) => void;
     showReplyInput: boolean;
     onToggleReplyInput: (commentId: string) => void;
     replyValue: string;
@@ -84,8 +89,11 @@ export interface CommentItemProps {
     replies: Reply[];
     likedReplies: string[];
     onLikeReply: (replyId: string, commentId: string) => void;
+    onDeleteReply?: (replyId: string, commentId: string) => void;
+    onEditReply?: (replyId: string, commentId: string, newContent: string) => void;
     fetchReplies: (commentId: string) => void;
     totalReplies: number;
     replyOffset: number;
     token: string | null;
+    currentUserId?: string;
 }

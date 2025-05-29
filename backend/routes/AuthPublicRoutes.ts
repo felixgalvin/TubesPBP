@@ -1,15 +1,28 @@
 import express from "express";
 import multer from "multer";
-import { signup } from "../controller/AuthRegister";
-import { login } from "../controller/AuthLogin";
-import { getAllPost, getUserPosts, getPostsByTopic, getPopularPosts } from "../controller/AuthPost";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { signup } from "../controller/RegisterController";
+import { login } from "../controller/LoginController";
+import { getAllPost, getUserPosts, getPostsByTopic, getPopularPosts } from "../controller/PostController";
 import { getPostDetails, getCommentsByPostManual, getRepliesByComment } from "../controller/CommentController";
 import { controllerWrapper } from "../utils/ControllerWrapper";
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Create upload directory if it doesn't exist
+const uploadDir = path.join(__dirname, "../../user_uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
-  destination: "uploads/",
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   },

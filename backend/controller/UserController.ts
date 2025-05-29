@@ -6,13 +6,22 @@ import bcrypt from "bcryptjs";
 import { AuthRequest } from "../middlewares/AuthorizationMiddleware";
 
 export const getUserData = async (req: AuthRequest) => {
+  console.log('getUserData called with userId:', req.userId);
+  
   const userId = req.userId;
 
   if (!userId) {
+    console.log('No userId provided');
     throw new Error("Unauthorized");
   }
 
   const user = await User.findByPk(userId);
+  console.log('User found:', user ? 'Yes' : 'No');
+
+  if (!user) {
+    console.log('User not found in database');
+    throw new Error("User not found");
+  }
 
   const likes = await Like.findAll({ where: { user_Id: userId } });
 
@@ -28,6 +37,8 @@ export const getUserData = async (req: AuthRequest) => {
   const likedReplies = likes
     .filter(like => like.reply_Id)
     .map(like => like.reply_Id);
+
+  console.log('Returning user data for:', user.username);
 
   return {
     message: "User data fetched",
@@ -78,7 +89,6 @@ export const updateUserProfile = async (req: Request) => {
   if (!valid) {
     throw new Error('Incorrect password');
   }
-
   // Prepare updates
   const updates: any = {};
   if (req.body.username) {
@@ -93,14 +103,22 @@ export const updateUserProfile = async (req: Request) => {
   if (req.body.newPassword) {
     updates.password = await bcrypt.hash(req.body.newPassword, 10);
   }
-  if (req.file?.filename) {
-    updates.profileImage = req.file.filename;
+  
+  // Handle profile image updates
+  if (req.body.removeProfileImage === 'true') {
+    updates.profileImage = null; // Remove profile image (set to default)
+  } else if (req.file?.filename) {
+    updates.profileImage = req.file.filename; // Set new profile image
   }
-
   await user.update(updates);
+
+  // Return updated user data
+  const updatedUser = await User.findByPk(userId, {
+    attributes: { exclude: ['password'] }
+  });
 
   return { 
     message: 'Profile updated', 
-    data: updates 
+    data: updatedUser
   };
 };

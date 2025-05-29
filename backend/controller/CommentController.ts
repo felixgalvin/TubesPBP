@@ -1,16 +1,15 @@
-
 import { Request, Response, NextFunction } from "express";
 import { v4 } from "uuid";
 import { Post } from "../models/Post";
 import { Comment } from "../models/Comment";
 import { User } from "../models/User";
 import { Reply } from "../models/Reply";
+import { Like } from "../models/Like";
 import { AuthRequest } from "../middlewares/AuthorizationMiddleware";
 
 export const getPostDetails = async (req: AuthRequest) => {
   const postId = req.params.postId;
   
-  // Find the post
   const post = await Post.findOne({ where: { post_Id: postId } });
   if (!post) {
     throw new Error("Post not found");
@@ -29,11 +28,9 @@ export const getPostDetails = async (req: AuthRequest) => {
   return result;
 };
 
-// Get comments by post with pagination and user information
 export const getCommentsByPostManual = async (req: AuthRequest) => {
   const { postId } = req.params;
 
-  // Get comments with pagination support via ?limit=&offset=
   const limit = parseInt((req.query.limit as string) || '10', 10);
   const offset = parseInt((req.query.offset as string) || '0', 10);
   
@@ -80,21 +77,18 @@ export const getCommentsByPostManual = async (req: AuthRequest) => {
 export const addComment = async (req: AuthRequest) => {
   const userId = req.userId;
   
-  // Check authorization
   if (!userId) {
     throw new Error("Unauthorized");
   }
 
   const { comment } = req.body;
   
-  // Validate comment content
   if (!comment || !comment.trim()) {
     throw new Error("Comment cannot be empty");
   }
 
   const postId = req.params.postId;
 
-  // Create new comment
   const newComment = await Comment.create({
     comment_Id: v4(),
     user_Id: userId,
@@ -106,15 +100,12 @@ export const addComment = async (req: AuthRequest) => {
   return newComment;
 };
 
-// Get all replies for a specific comment
 export const getRepliesByComment = async (req: AuthRequest) => {
   const { postId, commentId } = req.params;
   
-  // Parse pagination parameters
   const limit = parseInt((req.query.limit as string) || '10', 10);
   const offset = parseInt((req.query.offset as string) || '0', 10);
   
-  // Find replies with pagination
   const { count, rows } = await Reply.findAndCountAll({
     where: { post_Id: postId, comment_Id: commentId },
     limit,
@@ -152,24 +143,20 @@ export const getRepliesByComment = async (req: AuthRequest) => {
   return { data: result, total: count };
 };
 
-// Add reply to a specific comment
 export const addReplyToComment = async (req: AuthRequest) => {
   const { postId, commentId } = req.params;
   const userId = req.userId;
   
-  // Check authorization
   if (!userId) {
     throw new Error("Unauthorized");
   }
 
   const { commentReply } = req.body;
   
-  // Validate reply content
   if (!commentReply || !commentReply.trim()) {
     throw new Error("Reply cannot be empty");
   }
 
-  // Verify post and comment exist
   const post = await Post.findByPk(postId);
   const comment = await Comment.findByPk(commentId);
   
@@ -177,7 +164,6 @@ export const addReplyToComment = async (req: AuthRequest) => {
     throw new Error("Post or comment not found");
   }
 
-  // Create new reply
   const newReply = await Reply.create({
     reply_Id: v4(),
     user_Id: userId,
@@ -188,4 +174,132 @@ export const addReplyToComment = async (req: AuthRequest) => {
   });
 
   return newReply;
+};
+
+export const deleteComment = async (req: AuthRequest) => {
+  const { commentId } = req.params;
+  const userId = req.userId;
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const comment = await Comment.findOne({ 
+    where: { comment_Id: commentId } 
+  });
+
+  if (!comment) {
+    throw new Error("Comment not found");
+  }
+
+  if (comment.user_Id !== userId) {
+    throw new Error("You can only delete your own comments");
+  }
+
+  await Reply.destroy({ 
+    where: { comment_Id: commentId } 
+  });
+
+  await Like.destroy({ 
+    where: { comment_Id: commentId } 
+  });
+
+  await comment.destroy();
+
+  return { message: "Comment deleted successfully" };
+};
+
+export const deleteReply = async (req: AuthRequest) => {
+  const { replyId } = req.params;
+  const userId = req.userId;
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const reply = await Reply.findOne({ 
+    where: { reply_Id: replyId } 
+  });
+
+  if (!reply) {
+    throw new Error("Reply not found");
+  }
+
+  if (reply.user_Id !== userId) {
+    throw new Error("You can only delete your own replies");
+  }
+
+  await Like.destroy({ 
+    where: { reply_Id: replyId } 
+  });
+
+  await reply.destroy();
+
+  return { message: "Reply deleted successfully" };
+};
+
+export const editComment = async (req: AuthRequest) => {
+  const { commentId } = req.params;
+  const userId = req.userId;
+  const { comment } = req.body;
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  if (!comment || !comment.trim()) {
+    throw new Error("Comment cannot be empty");
+  }
+
+  const existingComment = await Comment.findOne({ 
+    where: { comment_Id: commentId } 
+  });
+
+  if (!existingComment) {
+    throw new Error("Comment not found");
+  }
+
+  if (existingComment.user_Id !== userId) {
+    throw new Error("You can only edit your own comments");
+  }
+
+  await existingComment.update({ comment: comment.trim() });
+
+  return { 
+    message: "Comment updated successfully",
+    comment: existingComment 
+  };
+};
+
+export const editReply = async (req: AuthRequest) => {
+  const { replyId } = req.params;
+  const userId = req.userId;
+  const { commentReply } = req.body;
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  if (!commentReply || !commentReply.trim()) {
+    throw new Error("Reply cannot be empty");
+  }
+
+  const existingReply = await Reply.findOne({ 
+    where: { reply_Id: replyId } 
+  });
+
+  if (!existingReply) {
+    throw new Error("Reply not found");
+  }
+
+  if (existingReply.user_Id !== userId) {
+    throw new Error("You can only edit your own replies");
+  }
+
+  await existingReply.update({ commentReply: commentReply.trim() });
+
+  return { 
+    message: "Reply updated successfully",
+    reply: existingReply 
+  };
 };

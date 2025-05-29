@@ -77,7 +77,8 @@
 .post-textarea {
   min-height: 150px;
   resize: vertical;
-  line-height: 1.5;
+  line-height: 1.6;
+  white-space: pre-wrap; /* Preserve formatting in textarea */
 }
 
 .post-select {

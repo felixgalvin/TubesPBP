@@ -1,0 +1,324 @@
+{
+  "info": {
+    "name": "TubesPBP API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "username", "value": "", "type": "text" },
+            { "key": "email", "value": "", "type": "text" },
+            { "key": "password", "value": "", "type": "text" },
+            { "key": "gender", "value": "", "type": "text" },
+            { "key": "profileImage", "type": "file", "src": [] }
+          ]
+        },
+        "url": "http://localhost:3000/api/register"
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/login"
+      }
+    },
+    {
+      "name": "Get Current User Data",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user"
+      }
+    },    {
+      "name": "Get User Profile by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/profile/1"
+      }
+    },
+    {
+      "name": "Get User Activity",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/activity"
+      }
+    },{
+      "name": "Update User Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "username", "value": "", "type": "text" },
+            { "key": "email", "value": "", "type": "text" },
+            { "key": "gender", "value": "", "type": "text" },
+            { "key": "profileImage", "type": "file", "src": [] }
+          ]
+        },
+        "url": "http://localhost:3000/api/user/1"
+      }
+    },
+    {
+      "name": "Get All Posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/post"
+      }
+    },
+    {
+      "name": "Get Popular Posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/post/popular"
+      }
+    },
+    {
+      "name": "Get Posts by Topic",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/post/topic?topic=technology"
+      }
+    },
+    {
+      "name": "Get Post Detail",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/post/1"
+      }
+    },
+    {
+      "name": "Get User's Posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/1/posts"
+      }
+    },    {
+      "name": "Create Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"post\": \"\",\n  \"topik\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/user/post"
+      }
+    },
+    {
+      "name": "Edit Post",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"post\": \"\",\n  \"topik\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/user/post/1"
+      }
+    },
+    {
+      "name": "Delete Post",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/post/1"
+      }
+    },
+    {
+      "name": "Get Comments for Post",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/post/1/comment?limit=10&offset=0"
+      }
+    },    {
+      "name": "Add Comment",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comment\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/comment"
+      }
+    },
+    {
+      "name": "Edit Comment",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comment\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/comment/1"
+      }
+    },
+    {
+      "name": "Delete Comment",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/post/1/comment/1"
+      }
+    },
+    {
+      "name": "Get Replies for Comment",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/user/post/1/comment/1/reply?limit=10&offset=0"
+      }
+    },    {
+      "name": "Add Reply to Comment",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"commentReply\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/comment/1/reply"
+      }
+    },
+    {
+      "name": "Edit Reply",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"commentReply\": \"\"\n}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/comment/1/reply/1"
+      }
+    },
+    {
+      "name": "Delete Reply",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/post/1/comment/1/reply/1"
+      }
+    },
+    {
+      "name": "Check Like Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/like/check?postId=1"
+      }
+    },    {
+      "name": "Like Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/like"
+      }
+    },
+    {
+      "name": "Like Comment",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/comment/1/like"
+      }
+    },
+    {
+      "name": "Like Reply",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": "http://localhost:3000/api/user/post/1/comment/1/reply/1/like"
+      }
+    },
+    {
+      "name": "Remove Like",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer " }
+        ],
+        "url": "http://localhost:3000/api/user/like?postId=1"
+      }
+    }
+  ]
+}

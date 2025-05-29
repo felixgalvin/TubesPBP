@@ -5,11 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/register': 'http://localhost:3000',
+      // Hanya proxy untuk API endpoints yang benar-benar ada di backend
       '/api': 'http://localhost:3000',
-      '/login': 'http://localhost:3000',
-      '/user': 'http://localhost:3000',
-      '/post': 'http://localhost:3000',
     }
   }
 })

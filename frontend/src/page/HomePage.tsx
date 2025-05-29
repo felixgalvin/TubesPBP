@@ -25,7 +25,11 @@ const Postdesk = ({
           </div>
         </div>
       </div>
-      <div className="home-post-content"><p>{post}</p></div>
+      <div className="home-post-content">
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+          {post}
+        </div>
+      </div>
       <div className="home-post-actions">
         <button className={`home-post-like-btn ${isLiked ? 'home-post-like-active' : ''}`} onClick={() => onLike(post_Id)} disabled={!localStorage.getItem("token")}
           style={{ opacity: !localStorage.getItem("token") ? 0.5 : 1, cursor: !localStorage.getItem("token") ? "not-allowed" : "pointer" }}>
@@ -37,12 +41,13 @@ const Postdesk = ({
   );
 };
 
-export const HomePage = () => {
-  const [user, setUser] = useState<User | null>(null);
+export const HomePage = () => {  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [offset, setOffset] = useState(0);
   const [totalPosts, setTotalPosts] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'recent' | 'popular' | 'topic'>('recent');
   const [selectedTopik, setSelectedTopik] = useState<string | null>(null);
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
@@ -63,18 +68,20 @@ export const HomePage = () => {
       fetchUserData(token);
     }
   }, [token]);
-
   useEffect(() => {
     setOffset(0);
     setPosts([]);
     setTotalPosts(0);
+    setHasMore(true);
   }, [mode, selectedTopik]);
 
   useEffect(() => {
     fetchPosts();
   }, [offset, mode, selectedTopik]);
-
   const fetchPosts = async () => {
+    if (loading) return;
+    
+    setLoading(true);
     try {
       let endpoint = `/user/post?limit=${limit}&offset=${offset}`;
       if (mode === 'popular') {
@@ -86,10 +93,22 @@ export const HomePage = () => {
       const result = await api.get<{ data: any; total?: number }>(endpoint, false);
       const batch: Post[] = Array.isArray(result.data) ? result.data : [];
       const total: number = typeof result.total === 'number' ? result.total : batch.length;
+      
       setPosts((prev) => (offset === 0 ? batch : [...prev, ...batch]));
       setTotalPosts(total);
+      
+      // Update hasMore berdasarkan kondisi:
+      // 1. Jika batch kosong, berarti tidak ada lagi data
+      // 2. Jika batch kurang dari limit, berarti ini batch terakhir
+      // 3. Jika offset + batch.length >= total, berarti sudah mencapai total
+      const currentlyLoaded = offset === 0 ? batch.length : posts.length + batch.length;
+      setHasMore(batch.length === limit && currentlyLoaded < total);
+      
     } catch (error) {
       setError('Error fetching posts');
+      setHasMore(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,9 +178,7 @@ export const HomePage = () => {
       </section>
     );
   }
-
   const displayedPosts = posts;
-  const hasMore = offset < totalPosts;
 
   return (
     <section className="home-page">

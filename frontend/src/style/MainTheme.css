@@ -9,11 +9,13 @@
   --background-color: #f5f7fa;    /* Light gray background */
   --surface-color: #ffffff;       /* White surface */
   --text-primary: #333333;        /* Dark gray for primary text */
-  --text-secondary: #666666;      /* Medium gray for secondary text */
-  --text-on-primary: #ffffff;     /* White text on primary color */
+  --text-secondary: #666666;      /* Medium gray for secondary text */  --text-on-primary: #ffffff;     /* White text on primary color */
   --error-color: #e53935;         /* Red for errors */
   --success-color: #43a047;       /* Green for success */
   --border-color: #e0e0e0;        /* Light gray for borders */
+  --hover-color: #f0f0f0;         /* Light gray for hover states */
+  --bg-primary: #ffffff;          /* Primary background */
+  --bg-secondary: #f8f9fa;        /* Secondary background */
   
   /* Typography */
   --font-family: 'Segoe UI', Arial, sans-serif;

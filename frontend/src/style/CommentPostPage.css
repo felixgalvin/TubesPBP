@@ -169,7 +169,8 @@
 }
 
 .comment-like-btn,
-.comment-reply-btn {
+.comment-reply-btn,
+.comment-delete-btn {
   background: none;
   border: none;
   display: flex;
@@ -187,6 +188,11 @@
 .comment-reply-btn:hover {
   background-color: rgba(0, 0, 0, 0.05);
   color: var(--primary-color);
+}
+
+.comment-delete-btn:hover {
+  background-color: rgba(229, 57, 53, 0.1);
+  color: var(--error-color);
 }
 
 .comment-like-active {
@@ -214,7 +220,7 @@
 }
 
 .comment-textarea {
-  width: 100%;
+  width: 96%;
   padding: var(--spacing-md);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--border-color);
@@ -321,7 +327,8 @@
   margin-top: var(--spacing-xs);
 }
 
-.reply-like-btn {
+.reply-like-btn,
+.reply-delete-btn {
   background: none;
   border: none;
   color: var(--text-secondary);
@@ -336,6 +343,10 @@
 
 .reply-like-btn:hover {
   color: var(--primary-color);
+}
+
+.reply-delete-btn:hover {
+  color: var(--error-color);
 }
 
 .reply-like-active {
@@ -355,6 +366,7 @@
   padding: var(--spacing-sm);
   resize: vertical;
   min-height: 60px;
+  width: 93.5%;
 }
 
 .reply-input button {
@@ -371,6 +383,82 @@
   flex-direction: column;
   opacity: 1;
   transition: opacity var(--transition-normal);
+}
+
+/* Edit form styles */
+.edit-form {
+  margin: 10px 0;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 10px;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  transition: border-color var(--transition-normal);
+}
+
+.edit-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-save-btn, .edit-cancel-btn {
+  padding: 5px 15px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color var(--transition-normal);
+  font-weight: 500;
+}
+
+.edit-save-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.edit-save-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.edit-cancel-btn {
+  background-color: var(--text-secondary);
+  color: white;
+}
+
+.edit-cancel-btn:hover {
+  background-color: #545b62;
+}
+
+.comment-edit-btn, .reply-edit-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 5px;
+  margin-left: 10px;
+  transition: color var(--transition-normal);
+  border-radius: var(--border-radius-sm);
+}
+
+.comment-edit-btn:hover, .reply-edit-btn:hover {
+  color: var(--primary-hover);
+  background-color: rgba(74, 144, 226, 0.1);
 }
 
 /* Responsive adjustments */

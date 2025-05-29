@@ -38,8 +38,24 @@ const PostDesk = ({ post_Id, title, post, likePost, topik, createdAt, username, 
 	</div>
 );
 
-export const ReplyItem = memo(({ reply, commentId, likedReplies, onLikeReply }: ReplyItemProps) => {
+export const ReplyItem = memo(({ reply, commentId, likedReplies, onLikeReply, onDeleteReply, onEditReply, currentUserId }: ReplyItemProps) => {
+	const [isEditing, setIsEditing] = useState(false);
+	const [editContent, setEditContent] = useState(reply.commentReply);
 	const liked = likedReplies.includes(reply.reply_Id);
+	const canModify = currentUserId && reply.user_Id === currentUserId;
+	
+	const handleEdit = () => {
+		if (onEditReply) {
+			onEditReply(reply.reply_Id, commentId, editContent.trim());
+			setIsEditing(false);
+		}
+	};
+
+	const handleCancelEdit = () => {
+		setEditContent(reply.commentReply);
+		setIsEditing(false);
+	};
+	
 	return (
 		<div className="reply-item">
 			<div className="reply-header">
@@ -49,7 +65,24 @@ export const ReplyItem = memo(({ reply, commentId, likedReplies, onLikeReply }: 
 					<span className="reply-date">{formatTime(reply.createdAt)}</span>
 				</div>
 			</div>
-			<div className="reply-content">{reply.commentReply}</div>
+			<div className="reply-content">
+				{isEditing ? (
+					<div className="edit-form">
+						<textarea
+							value={editContent}
+							onChange={(e) => setEditContent(e.target.value)}
+							className="edit-textarea"
+							rows={3}
+						/>
+						<div className="edit-actions">
+							<button onClick={handleEdit} className="edit-save-btn">Save</button>
+							<button onClick={handleCancelEdit} className="edit-cancel-btn">Cancel</button>
+						</div>
+					</div>
+				) : (
+					reply.commentReply
+				)}
+			</div>
 			<div className="reply-actions">
 				<button
 					className={`reply-like-btn ${liked ? 'reply-like-active' : ''}`}
@@ -58,13 +91,47 @@ export const ReplyItem = memo(({ reply, commentId, likedReplies, onLikeReply }: 
 				>
 					{liked ? '❤️' : '🤍'} {reply.likeReply}
 				</button>
+				{canModify && !isEditing && (
+					<button
+						className="reply-edit-btn"
+						onClick={() => setIsEditing(true)}
+						title="Edit reply"
+					>
+						✏️ Edit
+					</button>
+				)}
+				{canModify && onDeleteReply && !isEditing && (
+					<button
+						className="reply-delete-btn"
+						onClick={() => onDeleteReply(reply.reply_Id, commentId)}
+						title="Delete reply"
+					>
+						🗑️ Delete
+					</button>
+				)}
 			</div>
 		</div>
 	);
 });
 
-export const CommentItem = memo(({ comment, likedComments, onLikeComment, showReplyInput, onToggleReplyInput, replyValue, onReplyChange, onReplySubmit, replies, likedReplies, onLikeReply, fetchReplies, totalReplies, replyOffset, token }: CommentItemProps) => {
+export const CommentItem = memo(({ comment, likedComments, onLikeComment, showReplyInput, onToggleReplyInput, replyValue, onReplyChange, onReplySubmit, replies, likedReplies, onLikeReply, fetchReplies, totalReplies, replyOffset, token, onDeleteComment, onDeleteReply, onEditComment, onEditReply, currentUserId }: CommentItemProps) => {
+	const [isEditing, setIsEditing] = useState(false);
+	const [editContent, setEditContent] = useState(comment.comment);
 	const liked = likedComments.includes(comment.comment_Id);
+	const canModify = currentUserId && comment.user_Id === currentUserId;
+	
+	const handleEdit = () => {
+		if (onEditComment) {
+			onEditComment(comment.comment_Id, editContent.trim());
+			setIsEditing(false);
+		}
+	};
+
+	const handleCancelEdit = () => {
+		setEditContent(comment.comment);
+		setIsEditing(false);
+	};
+	
 	return (
 		<div className="comment-item">
 			<div className="comment-header">
@@ -76,7 +143,24 @@ export const CommentItem = memo(({ comment, likedComments, onLikeComment, showRe
 					</div>
 				</div>
 			</div>
-			<div className="comment-content">{comment.comment}</div>
+			<div className="comment-content">
+				{isEditing ? (
+					<div className="edit-form">
+						<textarea
+							value={editContent}
+							onChange={(e) => setEditContent(e.target.value)}
+							className="edit-textarea"
+							rows={3}
+						/>
+						<div className="edit-actions">
+							<button onClick={handleEdit} className="edit-save-btn">Save</button>
+							<button onClick={handleCancelEdit} className="edit-cancel-btn">Cancel</button>
+						</div>
+					</div>
+				) : (
+					comment.comment
+				)}
+			</div>
 			<div className="comment-actions">
 				<button
 					className={`comment-like-btn ${liked ? 'comment-like-active' : ''}`}
@@ -89,6 +173,24 @@ export const CommentItem = memo(({ comment, likedComments, onLikeComment, showRe
 				>
 					Reply
 				</button>
+				{canModify && !isEditing && (
+					<button
+						className="comment-edit-btn"
+						onClick={() => setIsEditing(true)}
+						title="Edit comment"
+					>
+						✏️ Edit
+					</button>
+				)}
+				{canModify && onDeleteComment && !isEditing && (
+					<button
+						className="comment-delete-btn"
+						onClick={() => onDeleteComment(comment.comment_Id)}
+						title="Delete comment"
+					>
+						🗑️ Delete
+					</button>
+				)}
 			</div>
 			{showReplyInput && (
 				<div className="reply-input">
@@ -109,6 +211,9 @@ export const CommentItem = memo(({ comment, likedComments, onLikeComment, showRe
 						commentId={comment.comment_Id}
 						likedReplies={likedReplies}
 						onLikeReply={onLikeReply}
+						onDeleteReply={onDeleteReply}
+						onEditReply={onEditReply}
+						currentUserId={currentUserId}
 					/>
 				))}
 				{totalReplies > replyOffset && (
@@ -372,6 +477,108 @@ const handleLikeReply = async (replyId: string, commentId: string) => {
 		console.error("Error updating like for reply:", error);
 	}
 };
+
+const handleEditComment = async (commentId: string, newContent: string) => {
+	if (!newContent.trim()) return;
+	
+	try {
+		await api.put(`/user/post/${postId}/comment/${commentId}`, { comment: newContent });
+		
+		// Update comment in local state
+		setComments((prev) =>
+			prev.map((c) =>
+				c.comment_Id === commentId ? { ...c, comment: newContent } : c
+			)
+		);
+		
+		console.log("Comment updated successfully");
+	} catch (error) {
+		console.error("Error updating comment:", error);
+		alert("Failed to update comment. Please try again.");
+	}
+};
+
+const handleEditReply = async (replyId: string, commentId: string, newContent: string) => {
+	if (!newContent.trim()) return;
+	
+	try {
+		await api.put(`/user/post/${postId}/comment/${commentId}/reply/${replyId}`, { commentReply: newContent });
+		
+		// Update reply in local state
+		setReplies((prev) => {
+			const updatedReplies = prev[commentId]?.map((r) =>
+				r.reply_Id === replyId ? { ...r, commentReply: newContent } : r
+			) || [];
+			return { ...prev, [commentId]: updatedReplies };
+		});
+		
+		console.log("Reply updated successfully");
+	} catch (error) {
+		console.error("Error updating reply:", error);
+		alert("Failed to update reply. Please try again.");
+	}
+};
+
+const handleDeleteComment = async (commentId: string) => {
+	const token = localStorage.getItem("token");
+	if (!token) return;
+
+	if (!window.confirm("Are you sure you want to delete this comment? This action cannot be undone.")) {
+		return;
+	}
+
+	try {
+		await api.delete(`/user/post/${postId}/comment/${commentId}`);
+		
+		// Remove comment from local state
+		setComments((prev) => prev.filter((c) => c.comment_Id !== commentId));
+		
+		// Remove any replies for this comment
+		setReplies((prev) => {
+			const updated = { ...prev };
+			delete updated[commentId];
+			return updated;
+		});
+		
+		// Update total comment count
+		setTotalComments((prev) => Math.max(0, prev - 1));
+		
+		console.log("Comment deleted successfully");
+	} catch (error) {
+		console.error("Error deleting comment:", error);
+		alert("Failed to delete comment. Please try again.");
+	}
+};
+
+const handleDeleteReply = async (replyId: string, commentId: string) => {
+	const token = localStorage.getItem("token");
+	if (!token) return;
+
+	if (!window.confirm("Are you sure you want to delete this reply? This action cannot be undone.")) {
+		return;
+	}
+
+	try {
+		await api.delete(`/user/post/${postId}/comment/${commentId}/reply/${replyId}`);
+		
+		// Remove reply from local state
+		setReplies((prev) => {
+			const updatedReplies = prev[commentId]?.filter((r) => r.reply_Id !== replyId) || [];
+			return { ...prev, [commentId]: updatedReplies };
+		});
+		
+		// Update total reply count for this comment
+		setTotalReplies((prev) => ({
+			...prev,
+			[commentId]: Math.max(0, (prev[commentId] || 0) - 1)
+		}));
+		
+		console.log("Reply deleted successfully");
+	} catch (error) {
+		console.error("Error deleting reply:", error);
+		alert("Failed to delete reply. Please try again.");
+	}
+};
 if (loading) return <div className="comment-page"><div className="comment-container"><p>Loading...</p></div></div>;
 	return (
 		<div className="comment-page">
@@ -380,8 +587,7 @@ if (loading) return <div className="comment-page"><div className="comment-contai
 				<div className="comment-section">
 					<h3 className="comment-section-title">Comments</h3>
 					{comments.length > 0 ? (
-						<>
-							{comments.map(c => (
+						<>							{comments.map(c => (
 								<CommentItem
 									key={c.comment_Id}
 									comment={c}
@@ -399,6 +605,11 @@ if (loading) return <div className="comment-page"><div className="comment-contai
 									totalReplies={totalReplies[c.comment_Id] || 0}
 									replyOffset={replyOffsets[c.comment_Id] || 0}
 									token={token}
+									onDeleteComment={handleDeleteComment}
+									onDeleteReply={handleDeleteReply}
+									onEditComment={handleEditComment}
+									onEditReply={handleEditReply}
+									currentUserId={userIdState || undefined}
 								/>
 							))}
 							{/* Load more comments if available */}
