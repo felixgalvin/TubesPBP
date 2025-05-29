@@ -287,7 +287,7 @@ const ProfilePage = () => {
     if (!editPostData.title.trim() || !editPostData.post.trim() || !editPostData.topik.trim()) {
       alert('All fields are required');
       return;
-    }    try {
+    } try {
       await api.put(`/user/post/${postId}`, {
         title: editPostData.title.trim(),
         post: editPostData.post, // Don't trim to preserve line breaks

@@ -5,21 +5,16 @@ import { Like } from "../models/Like";
 import bcrypt from "bcryptjs";
 import { AuthRequest } from "../middlewares/AuthorizationMiddleware";
 
-export const getUserData = async (req: AuthRequest) => {
-  console.log('getUserData called with userId:', req.userId);
-  
+export const getUserData = async (req: AuthRequest) => {  
   const userId = req.userId;
 
   if (!userId) {
-    console.log('No userId provided');
     throw new Error("Unauthorized");
   }
 
   const user = await User.findByPk(userId);
-  console.log('User found:', user ? 'Yes' : 'No');
 
   if (!user) {
-    console.log('User not found in database');
     throw new Error("User not found");
   }
 
@@ -37,8 +32,6 @@ export const getUserData = async (req: AuthRequest) => {
   const likedReplies = likes
     .filter(like => like.reply_Id)
     .map(like => like.reply_Id);
-
-  console.log('Returning user data for:', user.username);
 
   return {
     message: "User data fetched",

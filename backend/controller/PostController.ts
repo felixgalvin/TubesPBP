@@ -229,7 +229,6 @@ export const editPost = async (req: AuthRequest) => {
   const postId = req.params.postId;
   const { title, post: content, topik } = req.body;
 
-  // Validate required fields
   if (!title) {
     throw new Error("Title is required");
   }
@@ -240,24 +239,18 @@ export const editPost = async (req: AuthRequest) => {
     throw new Error("Topic is required");
   }
 
-  // Find the post
   const post = await Post.findByPk(postId);
   if (!post) {
     throw new Error("Post not found");
   }
 
-  // Check if user owns the post
   if (post.user_Id !== authUserId) {
     throw new Error("Forbidden: You can only edit your own posts");
   }
 
-  // Debug: Log the content to see if line breaks are preserved
-  console.log('Editing post with content:', JSON.stringify(content));
-
-  // Update the post - DON'T trim the content to preserve line breaks
   await post.update({
     title: title.trim(),
-    post: content, // Keep original formatting with line breaks
+    post: content, 
     topik: topik.trim()
   });
 
@@ -273,96 +266,86 @@ export const getUserCommentsAndReplies = async (req: AuthRequest) => {
     throw new Error("Unauthorized");
   }
 
-  console.log('getUserCommentsAndReplies called for user:', authUserId);
+  const userComments = await Comment.findAll({
+    where: { user_Id: authUserId },
+    order: [['createdAt', 'DESC']]
+  });
 
-  try {
-    // Get all comments by user
-    const userComments = await Comment.findAll({
-      where: { user_Id: authUserId },
-      order: [['createdAt', 'DESC']]
-    });
+  const userReplies = await Reply.findAll({
+    where: { user_Id: authUserId },
+    order: [['createdAt', 'DESC']]
+  });
 
-    // Get all replies by user
-    const userReplies = await Reply.findAll({
-      where: { user_Id: authUserId },
-      order: [['createdAt', 'DESC']]
-    });
+  // Process comments - get post and author info for each comment
+  const commentsData = await Promise.all(
+    userComments.map(async (comment: any) => {
+      const post = await Post.findByPk(comment.post_Id);
+      const postAuthor = post ? await User.findByPk(post.user_Id) : null;
+      
+      return {
+        type: 'comment',
+        id: comment.comment_Id,
+        content: comment.comment,
+        createdAt: comment.createdAt,
+        post: post ? {
+          post_Id: post.post_Id,
+          title: post.title,
+          content: post.post,
+          topik: post.topik,
+          createdAt: post.createdAt,
+          author: postAuthor ? {
+            username: postAuthor.username,
+            profileImage: postAuthor.profileImage
+          } : {
+            username: 'Unknown User',
+            profileImage: null
+          }
+        } : null
+      };
+    })
+  );
 
-    // Process comments - get post and author info for each comment
-    const commentsData = await Promise.all(
-      userComments.map(async (comment: any) => {
-        const post = await Post.findByPk(comment.post_Id);
-        const postAuthor = post ? await User.findByPk(post.user_Id) : null;
-        
-        return {
-          type: 'comment',
-          id: comment.comment_Id,
-          content: comment.comment,
-          createdAt: comment.createdAt,
-          post: post ? {
-            post_Id: post.post_Id,
-            title: post.title,
-            content: post.post,
-            topik: post.topik,
-            createdAt: post.createdAt,
-            author: postAuthor ? {
-              username: postAuthor.username,
-              profileImage: postAuthor.profileImage
-            } : {
-              username: 'Unknown User',
-              profileImage: null
-            }
-          } : null
-        };
-      })
-    );
+  // Process replies - get comment, post, and author info for each reply
+  const repliesData = await Promise.all(
+    userReplies.map(async (reply: any) => {
+      const comment = await Comment.findByPk(reply.comment_Id);
+      const post = comment ? await Post.findByPk(comment.post_Id) : null;
+      const postAuthor = post ? await User.findByPk(post.user_Id) : null;
+      
+      return {
+        type: 'reply',
+        id: reply.reply_Id,
+        content: reply.commentReply,
+        createdAt: reply.createdAt,
+        post: post ? {
+          post_Id: post.post_Id,
+          title: post.title,
+          content: post.post,
+          topik: post.topik,
+          createdAt: post.createdAt,
+          author: postAuthor ? {
+            username: postAuthor.username,
+            profileImage: postAuthor.profileImage
+          } : {
+            username: 'Unknown User',
+            profileImage: null
+          }
+        } : null
+      };
+    })
+  );
 
-    // Process replies - get comment, post, and author info for each reply
-    const repliesData = await Promise.all(
-      userReplies.map(async (reply: any) => {
-        const comment = await Comment.findByPk(reply.comment_Id);
-        const post = comment ? await Post.findByPk(comment.post_Id) : null;
-        const postAuthor = post ? await User.findByPk(post.user_Id) : null;
-        
-        return {
-          type: 'reply',
-          id: reply.reply_Id,
-          content: reply.commentReply, // Fixed: use correct field name
-          createdAt: reply.createdAt,
-          post: post ? {
-            post_Id: post.post_Id,
-            title: post.title,
-            content: post.post,
-            topik: post.topik,
-            createdAt: post.createdAt,
-            author: postAuthor ? {
-              username: postAuthor.username,
-              profileImage: postAuthor.profileImage
-            } : {
-              username: 'Unknown User',
-              profileImage: null
-            }
-          } : null
-        };
-      })
-    );
+  // Filter out items with null posts and combine
+  const validComments = commentsData.filter(item => item.post !== null);
+  const validReplies = repliesData.filter(item => item.post !== null);
+  
+  // Combine and sort by date
+  const allActivity = [...validComments, ...validReplies]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    // Filter out items with null posts and combine
-    const validComments = commentsData.filter(item => item.post !== null);
-    const validReplies = repliesData.filter(item => item.post !== null);
-    
-    // Combine and sort by date
-    const allActivity = [...validComments, ...validReplies]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    return {
-      comments: validComments,
-      replies: validReplies,
-      allActivity: allActivity
-    };
-
-  } catch (error) {
-    console.error('Error fetching user comments and replies:', error);
-    throw new Error('Failed to fetch user activity');
-  }
+  return {
+    comments: validComments,
+    replies: validReplies,
+    allActivity: allActivity
+  };
 };
