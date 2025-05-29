@@ -97,3 +97,21 @@ export interface CommentItemProps {
     token: string | null;
     currentUserId?: string;
 }
+
+export interface UserActivity {
+  type: 'comment' | 'reply';
+  id: string;
+  content: string;
+  createdAt: string;
+  post: {
+    post_Id: string;
+    title: string;
+    content: string;
+    topik: string;
+    createdAt: string;
+    author: {
+      username: string;
+      profileImage: string | null;
+    };
+  };
+}

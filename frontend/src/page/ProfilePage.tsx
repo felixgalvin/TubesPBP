@@ -5,24 +5,7 @@ import { formatTime } from '../utils/FormatTime';
 import { Post } from '../types/Index';
 import { api } from '../api/Api';
 import { getProfileImageUrl } from '../utils/ProfileImage';
-
-interface UserActivity {
-  type: 'comment' | 'reply';
-  id: string;
-  content: string;
-  createdAt: string;
-  post: {
-    post_Id: string;
-    title: string;
-    content: string;
-    topik: string;
-    createdAt: string;
-    author: {
-      username: string;
-      profileImage: string | null;
-    };
-  };
-}
+import { UserActivity } from '../types/Index'; // Assuming you have a type for user activity
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -36,7 +19,6 @@ const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');  const [userId, setUserId] = useState<string | null>(null);
   
-  // Tab state
   const [activeTab, setActiveTab] = useState<'posts' | 'activity'>('posts');
   const [userActivity, setUserActivity] = useState<UserActivity[]>([]);
   const [activityLoading, setActivityLoading] = useState<boolean>(false);
@@ -123,46 +105,43 @@ const ProfilePage = () => {
     setNewPassword('');
     setConfirmNewPassword('');
   };
+
   const cancelEdit = () => {
     setEditingField(null); setEditValue(''); setEditFile(null); setCurrentPassword('');
     setNewPassword(''); setConfirmNewPassword(''); setShowProfileOptions(false);
-  };  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     
-    // Check if the selected file is the same as current profile picture
     if (await isSameImage(file, profilePicture)) {
       alert("profilePicture should be different");
-      e.target.value = ''; // Clear the input
+      e.target.value = '';
       return;
     }
     
     setEditFile(file);
   };
-  // Function to compare if selected file is same as current profile picture
+
   const isSameImage = async (newFile: File, currentProfileImage: string | null): Promise<boolean> => {
     if (!currentProfileImage) return false; // No current image, so it's definitely different
     
     try {
-      // Extract filename from current profile image path
       const currentImageName = currentProfileImage.split('/').pop() || currentProfileImage;
       
-      // Quick check: if filenames are exactly the same
       if (newFile.name === currentImageName) {
         return true;
       }
       
-      // Get current image as blob for more thorough comparison
       const currentImageUrl = getProfileImageUrl(currentProfileImage);
       const response = await fetch(currentImageUrl);
       if (!response.ok) return false;
       
       const currentBlob = await response.blob();
       
-      // Compare file sizes first (quick check)
       if (newFile.size !== currentBlob.size) return false;
       
-      // If sizes are the same, do byte-by-byte comparison
       const newFileBuffer = await newFile.arrayBuffer();
       const currentBuffer = await currentBlob.arrayBuffer();
       
@@ -171,7 +150,6 @@ const ProfilePage = () => {
       const newArray = new Uint8Array(newFileBuffer);
       const currentArray = new Uint8Array(currentBuffer);
       
-      // Compare first 1024 bytes for performance (should be enough for most cases)
       const compareLength = Math.min(1024, newArray.length);
       for (let i = 0; i < compareLength; i++) {
         if (newArray[i] !== currentArray[i]) return false;
@@ -180,11 +158,10 @@ const ProfilePage = () => {
       return true;
     } catch (error) {
       console.error('Error comparing images:', error);
-      return false; // If there's an error, assume they're different
+      return false;
     }
   };
 
-  // Remove profile picture function
   const removeProfilePicture = async () => {
     if (!window.confirm('Are you sure you want to remove your profile picture and use the default?')) return;
     
@@ -201,19 +178,18 @@ const ProfilePage = () => {
       if (!userId) throw new Error('User ID missing');
       await api.putFormData<{ data: any }>(`/user/${userId}`, formData, true);
       
-      setProfilePicture(null); // Set to null for default
+      setProfilePicture(null);
       alert('Profile picture removed successfully');
       setShowProfileOptions(false);
       setCurrentPassword('');
     } catch (err: any) {
       alert(err.message || 'Failed to remove profile picture');
     }
-  };  // Save single field
+  };
   const saveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingField) return;
 
-    // skip update when value unchanged
     if (editingField === 'username' && editValue === username) { alert("Username should be different"); return; }
     if (editingField === 'email' && editValue === email) { alert("email should be different"); return; }
     if (editingField === 'profilePicture') {
@@ -222,14 +198,12 @@ const ProfilePage = () => {
         return; 
       }
       
-      // Check if the selected file is the same as current profile picture
       if (await isSameImage(editFile, profilePicture)) {
         alert("profilePicture should be different");
         return;
       }
     }
 
-    // prepare form data
     const formData = new FormData();
     if (editingField === 'password') {
       if (!currentPassword) { alert('Enter current password'); return; }
@@ -262,7 +236,6 @@ const ProfilePage = () => {
       alert(err.message || 'Update failed');
     }  };
 
-  // Start editing a post
   const startEditPost = (post: Post) => {
     setEditingPost(post.post_Id);
     setEditPostData({
@@ -272,7 +245,6 @@ const ProfilePage = () => {
     });
   };
 
-  // Cancel editing post
   const cancelEditPost = () => {
     setEditingPost(null);
     setEditPostData({
@@ -282,7 +254,6 @@ const ProfilePage = () => {
     });
   };
 
-  // Save edited post
   const saveEditPost = async (postId: string) => {
     if (!editPostData.title.trim() || !editPostData.post.trim() || !editPostData.topik.trim()) {
       alert('All fields are required');
@@ -290,7 +261,7 @@ const ProfilePage = () => {
     } try {
       await api.put(`/user/post/${postId}`, {
         title: editPostData.title.trim(),
-        post: editPostData.post, // Don't trim to preserve line breaks
+        post: editPostData.post,
         topik: editPostData.topik.trim()
       }, true);
 
@@ -307,7 +278,7 @@ const ProfilePage = () => {
       alert(err.message || 'Failed to update post');
     }
   };
-  // Delete handler with confirmation
+
   const handleDeletePost = async (postId: string) => {
     if (!userId) return;
     if (!window.confirm('Are you sure you want to delete this post?')) return;
@@ -324,7 +295,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Render activity item (comments/replies)
   const renderActivityItem = (activity: UserActivity) => (
     <div key={`${activity.type}-${activity.id}`} className="profile-activity-item">
       <div className="activity-header">
